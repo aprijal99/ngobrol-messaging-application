@@ -1,0 +1,17 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.left-0 {
+  left: 0;
+}
+
+.translate-x-minus-100-percent {
+  transform: translateX(-100%);
+}
+
+.transform-none {
+  transform: none;
+}
