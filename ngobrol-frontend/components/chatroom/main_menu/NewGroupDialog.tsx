@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import {AddAPhotoOutlined, ArrowBackIosNew, KeyboardArrowRight} from '@mui/icons-material';
-import React, {ReactNode} from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
 
@@ -23,6 +23,14 @@ const NewGroup = () => {
       newGroup.classList.add('translate-x-minus-100-percent');
       newGroupCreate.style.left = '0';
     }
+
+    const heightObserver = new ResizeObserver(entries => {
+      if(dialogContent && newGroup && newGroup.classList.contains('translate-x-minus-100-percent')) {
+        dialogContent.style.height = `${entries[0].contentRect.height + 64}px`;
+      }
+    });
+
+    if(newGroupCreateContainer) heightObserver.observe(newGroupCreateContainer);
   }
 
   const handleClickNewGroupJoin = () => {
@@ -36,10 +44,18 @@ const NewGroup = () => {
       newGroup.classList.add('translate-x-minus-100-percent');
       newGroupJoin.style.left = '0';
     }
+
+    const heightObserver = new ResizeObserver(entries => {
+      if(dialogContent && newGroup && newGroup.classList.contains('translate-x-minus-100-percent')) {
+        dialogContent.style.height = `${entries[0].contentRect.height + 64}px`;
+      }
+    });
+
+    if(newGroupJoinContainer) heightObserver.observe(newGroupJoinContainer);
   }
 
   return (
-    <Box id='new-group' sx={{ px: 3, py: 4, transition: 'transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms', }}>
+    <Box id='new-group' sx={{ px: 3, py: 4, minWidth: '100%', transition: 'transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms', }}>
       <Typography variant='h5' align='center' gutterBottom={true} sx={{ fontWeight: 'bold', }}>Create or Join a Group</Typography>
       <Typography align='center' sx={{ fontWeight: '300', mx: 'auto', color: 'rgba(255, 255, 255, 0.6)', }}>
         Create a new group and add your contacts to it or join another group by using a url
@@ -81,8 +97,15 @@ const CustomTableCell = ({ children, padding = 'none' }: { children: ReactNode, 
 
 const NewGroupCreate = () => {
   const { contact } = useSelector((state: RootState) => state.contact);
-  const myContact = [...contact];
-  myContact.push(...contact, ...contact);
+  const [addContacts, setAddContacts] = useState<{ name: string, email: string, }[]>([]);
+  const [checked, setChecked] = useState<{ [n: string]: boolean }>({});
+
+  useEffect(() => {
+    contact.map(c => {
+      checked[c.email] = false;
+      setChecked(checked);
+    });
+  }, []);
 
   const handleClickNewGroupCreateBack = () => {
     const dialogContent = document.getElementById('dialog-content');
@@ -143,16 +166,24 @@ const NewGroupCreate = () => {
           >
             <Table>
               <TableBody>
-                {myContact.map((c, idx) =>
+                {contact.map((c, idx) =>
                   <TableRow
                     key={idx}
+                    onClickCapture={() => {
+                      const newChecked: { [n: string]: boolean } = { ...checked }
+                      newChecked[c.email] = !checked[c.email];
+                      setChecked(newChecked);
+
+                      if(newChecked[c.email]) setAddContacts(prevState => [...prevState, { name: c.name, email: c.email }]);
+                      else setAddContacts(prevState => [...(prevState.filter(val => val.email !== c.email))]);
+                    }}
                     sx={{
-                      cursor: 'pointer', 'td:first-of-type': { borderRadius: '10px 0 0 10px', }, 'td:last-of-child': { borderRadius: '0 10px 10px 0', },
+                      cursor: 'pointer', 'td:first-of-type': { borderRadius: '10px 0 0 10px', }, 'td:last-of-type': { borderRadius: '0 10px 10px 0', },
                       ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)', },
                     }}
                   >
                     <CustomTableCell padding='checkbox'>
-                      <Checkbox disableRipple />
+                      <Checkbox disableRipple checked={checked[c.email] === undefined ? false : checked[c.email]} />
                     </CustomTableCell>
                     <CustomTableCell>
                       <Box sx={{ display: 'flex', p: .5, }}>
@@ -170,13 +201,25 @@ const NewGroupCreate = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          <Box display='flex' flexWrap='wrap' gap='5px'>
-            <Chip label='Aprijal Ghiyas Setiawan' variant='outlined' color='primary' onDelete={() => {}} sx={{ maxWidth: '150px', }} />
-            <Chip label='Ainun Nisa' variant='outlined' color='primary' onDelete={() => {}} sx={{ maxWidth: '150px', }} />
-            <Chip label='Deki Geraldi' variant='outlined' color='primary' onDelete={() => {}} sx={{ maxWidth: '150px', }} />
-            <Chip label='Irsyad Ibadurrahman' variant='outlined' color='primary' onDelete={() => {}} sx={{ maxWidth: '150px', }} />
-            <Chip label='Riyan Alifbi Putra Irsal' variant='outlined' color='primary' onDelete={() => {}} sx={{ maxWidth: '150px', }} />
-          </Box>
+
+          {addContacts.length !== 0 && <Box display='flex' flexWrap='wrap' gap='5px'>
+            {addContacts.map((addContact, idx) =>
+              <Chip
+                key={idx}
+                label={addContact.name}
+                variant='outlined'
+                color='primary'
+                sx={{ maxWidth: '150px', }}
+                onDelete={() => {
+                  setAddContacts(prevState => [...(prevState.filter(val => val.email !== addContact.email))]);
+
+                  const newChecked: { [n: string]: boolean } = { ...checked }
+                  newChecked[addContact.email] = !checked[addContact.email];
+                  setChecked(newChecked);
+                }}
+              />
+            )}
+          </Box>}
 
           <Button
             variant='contained'
@@ -194,6 +237,8 @@ const NewGroupCreate = () => {
 }
 
 const NewGroupJoin = () => {
+  const [joinGroup, setJoinGroup] = useState<string | null>(null);
+
   const handleClickNewGroupJoinBack = () => {
     const dialogContent = document.getElementById('dialog-content');
     const newGroup = document.getElementById('new-group');
@@ -221,7 +266,7 @@ const NewGroupJoin = () => {
         <Box display='flex' columnGap='10px' sx={{ mt: 4, mx: 'auto', }}>
           <TextField fullWidth label='Enter the group url' variant='outlined' autoComplete='nope' />
           <Button
-            variant='contained'
+            variant='contained' onClick={() => setJoinGroup('New Group')}
             sx={{
               textTransform: 'capitalize', boxShadow: 'none', px: 3, fontSize: 'initial',
               ':hover': { backgroundColor: '#199bf1', boxShadow: 'none', },
@@ -230,6 +275,8 @@ const NewGroupJoin = () => {
             Search
           </Button>
         </Box>
+
+        {joinGroup !== null && <Box>{joinGroup}</Box>}
       </Box>
     </Box>
   );

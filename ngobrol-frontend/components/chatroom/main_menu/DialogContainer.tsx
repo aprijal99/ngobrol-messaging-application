@@ -16,12 +16,11 @@ const DialogContentContainer = ({ children }: { children: ReactNode, }) => {
 
   return (
     <DialogContent
-      id='dialog-content' ref={dialogContentRef}
       sx={{
-        p: 0, display: 'flex', justifyContent: 'center', overflow: 'hidden', transition: 'height 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
+        p: 0, display: 'flex', justifyContent: 'center', overflow: 'hidden', alignItems: 'start',
       }}
     >
-      <Box sx={{ position: 'relative', overflow: 'hidden', display: 'flex', flexWrap: 'wrap', '@media (min-width: 620px)': { alignItems: 'center', }, }}>
+      <Box id='dialog-content' ref={dialogContentRef} sx={{ transition: 'height 225ms cubic-bezier(0, 0, 0.2, 1) 0ms', position: 'relative', overflow: 'hidden', display: 'flex', flexWrap: 'wrap', alignItems: 'start', '@media (min-width: 620px)': { alignItems: 'center', }, }}>
         {children}
       </Box>
     </DialogContent>
