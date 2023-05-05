@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box, Button, Checkbox, Chip, IconButton,
   Table, TableBody, TableCell,
@@ -6,10 +7,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import {AddAPhotoOutlined, ArrowBackIosNew, KeyboardArrowRight} from '@mui/icons-material';
+import {AddAPhotoOutlined, ArrowBackIosNew, Close, KeyboardArrowRight} from '@mui/icons-material';
 import React, {ReactNode, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
+import {GroupType} from '../../../redux/slice/groupSlice';
+import findGroup from '../../../functions/findGroup';
 
 const NewGroup = () => {
   const handleClickNewGroupCreate = () => {
@@ -124,9 +127,8 @@ const NewGroupCreate = () => {
     <Box
       id='new-group-create'
       sx={{
-        px: 3, py: 4, position: 'absolute', left: '100%', maxHeight: '100%', minWidth: '100%', overflowX: 'hidden', overflowY: 'auto', transition: 'left 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
-        '::-webkit-scrollbar': { width: '5px', }, '::-webkit-scrollbar-thumb': { borderRadius: '5px', visibility: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.3)', },
-        ':hover': { '::-webkit-scrollbar-thumb': { visibility: 'visible', }, },
+        px: 3, py: 4, position: 'absolute', left: '100%', maxHeight: '100%', minWidth: '100%', overflow: 'hidden',
+        transition: 'left 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
       }}
     >
       <IconButton onClick={handleClickNewGroupCreateBack} sx={{ position: 'absolute', top: '12px', left: '10px', zIndex: '100', }}>
@@ -237,7 +239,23 @@ const NewGroupCreate = () => {
 }
 
 const NewGroupJoin = () => {
-  const [joinGroup, setJoinGroup] = useState<string | null>(null);
+  const [joinGroup, setJoinGroup] = useState<GroupType | null | 'notFound'>(null);
+  const [alert, setAlert] = useState(false);
+
+  const handleClickFindGroup = () => {
+    const groupUrlInput = document.getElementById('group-url-input') as HTMLInputElement;
+    const groupId: string = groupUrlInput ? groupUrlInput.value.substring('https://n.group/'.length) : '';
+
+    findGroup(groupId)
+      .then(result => {
+        if(result instanceof Error) throw new Error('Group not found')
+        else setJoinGroup(result);
+      })
+      .catch(() => {
+        setJoinGroup('notFound');
+        setAlert(true);
+      })
+  }
 
   const handleClickNewGroupJoinBack = () => {
     const dialogContent = document.getElementById('dialog-content');
@@ -264,9 +282,9 @@ const NewGroupJoin = () => {
         </Typography>
 
         <Box display='flex' columnGap='10px' sx={{ mt: 4, mx: 'auto', }}>
-          <TextField fullWidth label='Enter the group url' variant='outlined' autoComplete='nope' />
+          <TextField id='group-url-input' fullWidth label='Enter the group url' variant='outlined' autoComplete='nope' />
           <Button
-            variant='contained' onClick={() => setJoinGroup('New Group')}
+            variant='contained' onClick={handleClickFindGroup}
             sx={{
               textTransform: 'capitalize', boxShadow: 'none', px: 3, fontSize: 'initial',
               ':hover': { backgroundColor: '#199bf1', boxShadow: 'none', },
@@ -276,7 +294,32 @@ const NewGroupJoin = () => {
           </Button>
         </Box>
 
-        {joinGroup !== null && <Box>{joinGroup}</Box>}
+        {joinGroup && joinGroup !== 'notFound' && <Box sx={{ mt: 4, }}>
+          <Typography align='center' sx={{ mb: .5, fontSize: '.9rem', color: 'rgba(255, 255, 255, 0.6)', }}>Found the following group</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', p: 2, borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.23)', }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
+              <Avatar alt='Contact Profile Image' src='https://i.pravatar.cc/150?u=a042581f4e29026024d' />
+            </Box>
+            <Box sx={{ mr: 2, flexGrow: '1', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', }}>
+              <Typography sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', }}>{joinGroup.name}</Typography>
+              <Typography sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', fontSize: '.85rem', fontWeight: '300', color: 'rgba(255, 255, 255, 0.6)', }}>{joinGroup.userNumber} members</Typography>
+            </Box>
+            <Button variant='outlined' size='small' sx={{ textTransform: 'capitalize', borderRadius: '20px', minWidth: '60px', ':hover': { backgroundColor: 'initial', }, }}>Join</Button>
+          </Box>
+        </Box>}
+
+        {(joinGroup === 'notFound' && alert) &&
+          <Alert
+            severity='error' variant='outlined' sx={{ mt: 2, }}
+            action={
+              <IconButton aria-label='close' color='inherit' size='small' onClick={() => setAlert(false)}>
+                <Close fontSize='inherit' />
+              </IconButton>
+            }
+          >
+            Group not found
+          </Alert>
+        }
       </Box>
     </Box>
   );

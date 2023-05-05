@@ -17,10 +17,17 @@ const DialogContentContainer = ({ children }: { children: ReactNode, }) => {
   return (
     <DialogContent
       sx={{
-        p: 0, display: 'flex', justifyContent: 'center', overflow: 'hidden', alignItems: 'start',
+        p: 0, display: 'flex', justifyContent: 'center', overflowX: 'hidden', overflowY: 'auto', alignItems: 'start',
+        '::-webkit-scrollbar': { width: '5px', }, '::-webkit-scrollbar-thumb': { borderRadius: '5px', visibility: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.3)', },
+        ':hover': { '::-webkit-scrollbar-thumb': { visibility: 'visible', }, },
       }}
     >
-      <Box id='dialog-content' ref={dialogContentRef} sx={{ transition: 'height 225ms cubic-bezier(0, 0, 0.2, 1) 0ms', position: 'relative', overflow: 'hidden', display: 'flex', flexWrap: 'wrap', alignItems: 'start', '@media (min-width: 620px)': { alignItems: 'center', }, }}>
+      <Box
+        id='dialog-content' ref={dialogContentRef}
+        sx={{
+          position: 'relative', overflow: 'hidden', display: 'flex', flexWrap: 'wrap', alignItems: 'start',
+          transition: 'height 225ms cubic-bezier(0, 0, 0.2, 1) 0ms', '@media (min-width: 620px)': { alignItems: 'center', }, }}
+      >
         {children}
       </Box>
     </DialogContent>

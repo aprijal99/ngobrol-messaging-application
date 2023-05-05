@@ -34,7 +34,7 @@ public class GroupChatServiceImpl implements GroupChatService {
 
     @Override
     public GroupChat findGroupChatById(Integer groupChatId) {
-        return groupChatRepository.findGroupChatByGroupId(groupChatId).orElseThrow(() -> new EntityNotFoundException("Group not found"));
+        return groupChatRepository.findGroupChatByGroupId(groupChatId).orElse(null);
     }
 
     @Override

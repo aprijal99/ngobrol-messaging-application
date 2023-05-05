@@ -50,6 +50,7 @@ public class SecurityConfiguration {
                 .antMatchers("/contact", "/contact/**").permitAll()
                 .antMatchers("/message", "/message/**").permitAll()
                 .antMatchers("/group", "/group/**").permitAll()
+                .antMatchers("/image", "/image/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/websocket", "/websocket/**").permitAll()
 //                .antMatchers("/websocket").authenticated()

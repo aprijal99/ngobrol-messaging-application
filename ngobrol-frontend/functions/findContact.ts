@@ -1,7 +1,7 @@
 import {UserType} from '../redux/slice/userSlice';
 import {ApiType} from '../types/api';
 
-const findNewContact = async (email: string): Promise<UserType | Error> => {
+const findContact = async (email: string): Promise<UserType | Error> => {
   const url = `http://localhost:7080/user?email=${email}`;
   try {
     const fetchResult = await fetch(url, { credentials: 'include', });
@@ -17,4 +17,4 @@ const findNewContact = async (email: string): Promise<UserType | Error> => {
   }
 }
 
-export default findNewContact;
+export default findContact;

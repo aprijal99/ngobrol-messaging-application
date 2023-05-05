@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin
 @RestController
 @RequestMapping(path = "/group")
+@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class GroupChatRestController {
     private final UserService userService;
     private final GroupChatService groupChatService;
@@ -35,6 +35,17 @@ public class GroupChatRestController {
         this.groupChatService = groupChatService;
         this.userGroupService = userGroupService;
         this.groupMessageService = groupMessageService;
+    }
+
+    @GetMapping(path = "/find", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getGroupByGroupId(@RequestParam(name = "group_id") Integer groupId) {
+        GroupChat groupChat = groupChatService.findGroupChatById(groupId);
+
+        if (groupChat == null) {
+            return ResponseUtil.noData(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseUtil.withData(HttpStatus.FOUND, groupChatService.entityToDto(groupChat));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

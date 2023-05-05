@@ -1,7 +1,7 @@
 import {Alert, Avatar, Box, Button, IconButton, TextField, Typography} from '@mui/material';
 import React, {useState} from 'react';
 import {UserType} from '../../../redux/slice/userSlice';
-import findNewContact from '../../../functions/findNewContact';
+import findContact from '../../../functions/findContact';
 import {Close} from '@mui/icons-material';
 
 const NewContactDialog = () => {
@@ -12,7 +12,7 @@ const NewContactDialog = () => {
     const newContactInput = document.getElementById('new-contact-input') as HTMLInputElement;
     const newContactEmail: string = newContactInput ? newContactInput.value : '';
 
-    findNewContact(newContactEmail)
+    findContact(newContactEmail)
       .then(result => {
         if(result instanceof Error) throw new Error('Contact not found');
         else setNewContact(result);
@@ -43,7 +43,7 @@ const NewContactDialog = () => {
         </Button>
       </Box>
 
-      {newContact !== null && newContact !== 'notFound' && <Box sx={{ mt: 4, }}>
+      {newContact && newContact !== 'notFound' && <Box sx={{ mt: 4, }}>
         <Typography align='center' sx={{ mb: .5, fontSize: '.9rem', color: 'rgba(255, 255, 255, 0.6)', }}>Found the following contact</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', p: 2, borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.23)', }}>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
