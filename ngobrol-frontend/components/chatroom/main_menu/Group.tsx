@@ -7,8 +7,10 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
 import {IconButton, Tooltip} from '@mui/material';
 import {useState} from 'react';
-import NewGroupDialog from './NewGroupDialog';
-import DialogContainer from './DialogContainer';
+import DialogContainer from '../dialog/DialogContainer';
+import AddGroupDialog from '../dialog/AddGroupDialog';
+import GroupCreateDialog from '../dialog/GroupCreateDialog';
+import GroupJoinDialog from '../dialog/GroupJoinDialog';
 
 const NewGroupButton = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -23,7 +25,9 @@ const NewGroupButton = () => {
         </IconButton>
       </Tooltip>
       <DialogContainer open={open} handleClickCloseDialog={handleClickCloseDialog}>
-        <NewGroupDialog />
+        <AddGroupDialog />
+        <GroupCreateDialog />
+        <GroupJoinDialog />
       </DialogContainer>
     </>
   );

@@ -26,7 +26,8 @@ const DialogContentContainer = ({ children }: { children: ReactNode, }) => {
         id='dialog-content' ref={dialogContentRef}
         sx={{
           position: 'relative', overflow: 'hidden', display: 'flex', flexWrap: 'wrap', alignItems: 'start',
-          transition: 'height 225ms cubic-bezier(0, 0, 0.2, 1) 0ms', '@media (min-width: 620px)': { alignItems: 'center', }, }}
+          transition: 'height 225ms cubic-bezier(0, 0, 0.2, 1) 0ms', '@media (min-width: 620px)': { alignItems: 'center', },
+        }}
       >
         {children}
       </Box>

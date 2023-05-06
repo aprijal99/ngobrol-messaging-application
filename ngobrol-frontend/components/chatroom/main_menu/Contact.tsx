@@ -7,8 +7,8 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
 import {IconButton, Tooltip} from '@mui/material';
 import {useState} from 'react';
-import NewContactDialog from './NewContactDialog';
-import DialogContainer from './DialogContainer';
+import AddContactDialog from '../dialog/AddContactDialog';
+import DialogContainer from '../dialog/DialogContainer';
 
 const NewContactButton = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -23,7 +23,7 @@ const NewContactButton = () => {
         </IconButton>
       </Tooltip>
       <DialogContainer open={open} handleClickCloseDialog={handleClickCloseDialog}>
-        <NewContactDialog />
+        <AddContactDialog />
       </DialogContainer>
     </>
   );

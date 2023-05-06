@@ -44,9 +44,7 @@ const NewChatButton = () => {
         </IconButton>
       </Tooltip>
       <Menu
-        id='add-chat-menu'
-        anchorEl={anchorEl}
-        open={open}
+        id='add-chat-menu' anchorEl={anchorEl} open={open}
         onClose={() => setAnchorEl(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right', }}
         transformOrigin={{ vertical: 'top', horizontal: 'right', }}

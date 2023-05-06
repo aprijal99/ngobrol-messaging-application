@@ -4,11 +4,11 @@ import {UserType} from '../../../redux/slice/userSlice';
 import findContact from '../../../functions/findContact';
 import {Close} from '@mui/icons-material';
 
-const NewContactDialog = () => {
+const AddContactDialog = () => {
   const [newContact, setNewContact] = useState<UserType | null | 'notFound'>(null);
   const [alert, setAlert] = useState(false);
 
-  const handleClickFindNewContact = () => {
+  const handleClickFindContact = () => {
     const newContactInput = document.getElementById('new-contact-input') as HTMLInputElement;
     const newContactEmail: string = newContactInput ? newContactInput.value : '';
 
@@ -33,7 +33,7 @@ const NewContactDialog = () => {
       <Box display='flex' columnGap='10px' sx={{ mt: 4, mx: 'auto', }}>
         <TextField id='new-contact-input' fullWidth label='Search by an email' variant='outlined' autoComplete='nope' />
         <Button
-          variant='contained' onClick={handleClickFindNewContact}
+          variant='contained' onClick={handleClickFindContact}
           sx={{
             textTransform: 'capitalize', boxShadow: 'none', px: 3, fontSize: 'initial',
             ':hover': { backgroundColor: '#199bf1', boxShadow: 'none', },
@@ -73,4 +73,4 @@ const NewContactDialog = () => {
   );
 }
 
-export default NewContactDialog;
+export default AddContactDialog;
