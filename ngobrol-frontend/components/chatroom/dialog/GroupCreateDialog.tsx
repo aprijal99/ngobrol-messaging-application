@@ -15,6 +15,10 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
 import {AddAPhotoOutlined, ArrowBackIosNew} from '@mui/icons-material';
 import ImageCropper from './ImageCropper';
+import uploadImage from '../../../functions/uploadImage';
+import {ApiType} from '../../../types/api';
+import {Simulate} from 'react-dom/test-utils';
+import error = Simulate.error;
 
 const CustomTableCell = ({ children, padding = 'none' }: { children: ReactNode, padding?: 'none' | 'normal' | 'checkbox' | undefined, }) => {
   return (
@@ -51,6 +55,44 @@ const GroupCreateDialog = () => {
     }
   }
 
+  const handleClickSubmitNewGroup = () => {
+    if(uploadedImg) {
+      uploadImage(uploadedImg)
+        .then(result => {
+          if(result instanceof Error) throw result;
+          else {
+            const groupName = (document.getElementById('group-name-input') as HTMLInputElement)?.value;
+            const groupDesc = (document.getElementById('group-desc-input') as HTMLInputElement)?.value;
+
+            const formBody: { [n: string]: any } = {
+              name: groupName,
+              description: groupDesc,
+              imageUrl: result,
+              users: addContacts,
+              createdAt: new Date().getTime(),
+            }
+
+            fetch('http://localhost:7080/group', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formBody),
+            })
+              .then(fetchResult => fetchResult.json())
+              .then((result: ApiType) => {
+                if(result.code !== 201) throw new Error('Something went wrong');
+                else console.log('Group created successfully');
+              })
+              .catch(error => console.log(error));
+          }
+        })
+        .catch(error => console.log(error));
+    } else {
+      console.log('Group name can not be empty and at least select one contact');
+    }
+  }
+
   return (
     <Box
       id='new-group-create'
@@ -72,7 +114,7 @@ const GroupCreateDialog = () => {
         </Typography>
 
         <Box display='flex' flexDirection='column' rowGap='15px' justifyContent='center' sx={{ mt: 4, mx: 'auto', }}>
-          <Box display='flex' columnGap='10px'>
+          <Box display='flex' columnGap='10px' rowGap='10px' flexWrap='wrap'>
             <Box
               display='flex' justifyContent='center' alignItems='center'
               onClick={() => document.getElementById('file-input-new-group')?.click()}
@@ -93,7 +135,8 @@ const GroupCreateDialog = () => {
                 }}
               />
             </Box>
-            <TextField fullWidth label='Group name' variant='outlined' autoComplete='nope' />
+            <TextField id='group-name-input' label='Group name' variant='outlined' autoComplete='nope' sx={{ flexGrow: '1', }} />
+            <TextField id='group-desc-input' fullWidth size='small' label='Group description' variant='outlined' autoComplete='nope' sx={{ width: '100', }} />
           </Box>
 
           {/*<TextField fullWidth hiddenLabel placeholder='Search contacts' variant='standard' autoComplete='nope' size='small'*/}
@@ -166,7 +209,7 @@ const GroupCreateDialog = () => {
           </Box>}
 
           <Button
-            variant='contained'
+            variant='contained' onClick={handleClickSubmitNewGroup}
             sx={{
               textTransform: 'capitalize', boxShadow: 'none', px: 3, fontSize: 'initial', mt: 1,
               ':hover': { backgroundColor: '#199bf1', boxShadow: 'none', },
