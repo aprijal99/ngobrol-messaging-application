@@ -1,10 +1,16 @@
 import React, {useState} from 'react';
-import {GroupType} from '../../../redux/slice/groupSlice';
+import {addGroup, GroupType} from '../../../redux/slice/groupSlice';
 import findGroup from '../../../functions/findGroup';
 import {Alert, Avatar, Box, Button, IconButton, TextField, Typography} from '@mui/material';
 import {ArrowBackIosNew, Close} from '@mui/icons-material';
+import {useDispatch, useSelector, useStore} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store/store';
+import {ApiType} from '../../../types/api';
 
 const GroupJoinDialog = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const store = useStore<RootState>();
+  const { group } = useSelector((state: RootState) => state.group);
   const [joinGroup, setJoinGroup] = useState<GroupType | null | 'notFound'>(null);
   const [alert, setAlert] = useState(false);
 
@@ -12,15 +18,40 @@ const GroupJoinDialog = () => {
     const groupUrlInput = document.getElementById('group-url-input') as HTMLInputElement;
     const groupId: string = groupUrlInput ? groupUrlInput.value.substring('https://n.group/'.length) : '';
 
-    findGroup(groupId)
-      .then(result => {
-        if(result instanceof Error) throw new Error('Group not found')
-        else setJoinGroup(result);
+    if(groupId !== '') {
+      findGroup(groupId)
+        .then(result => {
+          if(result instanceof Error) throw new Error('Group not found')
+          else setJoinGroup(result);
+        })
+        .catch(() => {
+          setJoinGroup('notFound');
+          setAlert(true);
+        });
+    }
+  }
+
+  const handleClickJoinGroup = () => {
+    if(joinGroup !== null && joinGroup !== 'notFound') {
+      const formBody: { [n: string]: any } = {
+        userEmail: store.getState().user.user.email,
+        groupChatId: joinGroup.groupId as number,
+      }
+
+      fetch('http://localhost:7080/group/assign-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formBody),
       })
-      .catch(() => {
-        setJoinGroup('notFound');
-        setAlert(true);
-      })
+        .then(fetchResult => fetchResult.json())
+        .then((result: ApiType) => {
+          if(result.code !== 201) throw new Error('Something went wrong');
+          else dispatch(addGroup(joinGroup));
+        })
+        .catch(error => console.log(error));
+    }
   }
 
   const handleClickNewGroupJoinBack = () => {
@@ -69,7 +100,10 @@ const GroupJoinDialog = () => {
               <Typography sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', }}>{joinGroup.name}</Typography>
               <Typography sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', fontSize: '.85rem', fontWeight: '300', color: 'rgba(255, 255, 255, 0.6)', }}>{joinGroup.userNumber} members</Typography>
             </Box>
-            <Button variant='outlined' size='small' sx={{ textTransform: 'capitalize', borderRadius: '20px', minWidth: '60px', ':hover': { backgroundColor: 'initial', }, }}>Join</Button>
+            {group.some(g => g.groupId === joinGroup.groupId) ?
+              <Button variant='outlined' size='small' color='error' sx={{ textTransform: 'capitalize', borderRadius: '20px', minWidth: '60px', ':hover': { backgroundColor: 'initial', }, }}>Leave</Button> :
+              <Button variant='outlined' size='small' onClick={handleClickJoinGroup} sx={{ textTransform: 'capitalize', borderRadius: '20px', minWidth: '60px', ':hover': { backgroundColor: 'initial', }, }}>Join</Button>
+            }
           </Box>
         </Box>}
 

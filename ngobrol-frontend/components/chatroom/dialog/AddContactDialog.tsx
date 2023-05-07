@@ -55,9 +55,7 @@ const AddContactDialog = () => {
         .then(fetchResult => fetchResult.json())
         .then((result: ApiType) => {
           if(result.code !== 201) throw new Error('Something went wrong');
-          else {
-            dispatch(addContact(newContact));
-          }
+          else dispatch(addContact(newContact));
         })
         .catch(error => console.log(error));
     }
