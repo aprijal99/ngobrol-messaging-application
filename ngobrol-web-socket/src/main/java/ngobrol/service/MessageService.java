@@ -11,6 +11,7 @@ import java.util.Map;
 public interface MessageService {
     void saveMessage(Message message);
     List<User> findReceiversBySender(User sender);
+    List<User> findSendersByReceiver(User receiver);
     List<Message> findMessagesBySenderAndReceiver(User sender, User receiver);
     List<Message> findMessagesBySenderAndReceiverTopRecord(User sender, List<User> receivers);
     Message dtoToEntity(MessageDto messageDto, User sender, User receiver);

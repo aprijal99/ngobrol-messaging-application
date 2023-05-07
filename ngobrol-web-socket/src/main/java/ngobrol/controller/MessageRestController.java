@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +34,12 @@ public class MessageRestController {
         User user = userService.findUserByEmail(email);
 
         List<User> receivers = messageService.findReceiversBySender(user);
-        List<Message> messages = messageService.findMessagesBySenderAndReceiverTopRecord(user, receivers);
+        List<User> senders = messageService.findSendersByReceiver(user);
+        List<User> contacts = new ArrayList<>(new HashSet<>(receivers));
+        contacts.addAll(receivers);
+        contacts.addAll(senders);
+
+        List<Message> messages = messageService.findMessagesBySenderAndReceiverTopRecord(user, new ArrayList<>(new HashSet<>(contacts)));
         Map<String, ChatDto> chat = messageService.groupMessageByReceiverBecomeChat(user.getEmail(), messages);
 
         return ResponseUtil.withData(HttpStatus.FOUND, chat);

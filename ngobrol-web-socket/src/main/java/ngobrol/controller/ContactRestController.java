@@ -40,8 +40,8 @@ public class ContactRestController {
         User user = userService.findUserByEmail(contactDto.getUserEmail());
         User contactUser = userService.findUserByEmail(contactDto.getContactEmail());
 
-        Contact contact = contactService.dtoToEntity(user, contactUser);
-        contactService.saveContact(contact);
+        contactService.saveContact(contactService.dtoToEntity(user, contactUser));
+        contactService.saveContact(contactService.dtoToEntity(contactUser, user));
 
         return ResponseUtil.noData(HttpStatus.CREATED);
     }

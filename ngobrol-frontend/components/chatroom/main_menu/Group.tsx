@@ -5,7 +5,7 @@ import GroupList from './GroupList';
 import {GroupAddOutlined} from '@mui/icons-material';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
-import {Backdrop, CircularProgress, IconButton, Tooltip} from '@mui/material';
+import {IconButton, Tooltip} from '@mui/material';
 import React, {useState} from 'react';
 import DialogContainer from '../dialog/DialogContainer';
 import AddGroupDialog from '../dialog/AddGroupDialog';
@@ -14,10 +14,8 @@ import GroupJoinDialog from '../dialog/GroupJoinDialog';
 
 const NewGroupButton = () => {
   const [openAddGroupDialog, setOpenAddGroupDialog] = useState<boolean>(false);
-  const [openBackdrop, setOpenBackdrop] = useState<boolean>(false);
   const handleClickOpenDialog = () => setOpenAddGroupDialog(true);
   const handleClickCloseDialog = () => setOpenAddGroupDialog(false);
-  const handleSetOpenBackdrop = () => setOpenBackdrop(prevState => !prevState);
 
   return (
     <>
@@ -28,12 +26,9 @@ const NewGroupButton = () => {
       </Tooltip>
       <DialogContainer open={openAddGroupDialog} handleClickCloseDialog={handleClickCloseDialog}>
         <AddGroupDialog />
-        <GroupCreateDialog handleClickCloseDialog={handleClickCloseDialog} handleSetOpenBackdrop={handleSetOpenBackdrop} />
+        <GroupCreateDialog handleClickCloseDialog={handleClickCloseDialog} />
         <GroupJoinDialog />
       </DialogContainer>
-      <Backdrop open={openBackdrop} sx={{ zIndex: '10000', }}>
-        <CircularProgress />
-      </Backdrop>
     </>
   );
 }

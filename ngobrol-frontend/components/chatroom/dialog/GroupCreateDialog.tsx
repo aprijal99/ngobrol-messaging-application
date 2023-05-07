@@ -1,7 +1,7 @@
 import React, {ReactNode, useEffect, useState} from 'react';
 import {
-  Avatar,
-  Box, Button, Checkbox, Chip,
+  Avatar, Backdrop,
+  Box, Button, Checkbox, Chip, CircularProgress,
   IconButton,
   Table,
   TableBody,
@@ -27,7 +27,7 @@ const CustomTableCell = ({ children, padding = 'none' }: { children: ReactNode, 
   );
 }
 
-const GroupCreateDialog = ({ handleClickCloseDialog, handleSetOpenBackdrop }: { handleClickCloseDialog: () => void, handleSetOpenBackdrop: () => void, }) => {
+const GroupCreateDialog = ({ handleClickCloseDialog }: { handleClickCloseDialog: () => void, }) => {
   const user = useStore<RootState>().getState().user.user;
   const dispatch = useDispatch<AppDispatch>();
   const { contact } = useSelector((state: RootState) => state.contact);
@@ -36,6 +36,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog, handleSetOpenBackdrop }: { 
   const [cropper, setCropper] = useState<boolean>(false);
   const [uploadedImg, setUploadedImg] = useState<File | null>(null);
   const [tempImg, setTempImg] = useState<File | null>(null);
+  const [backdropLoading, setBackdropLoading] = useState<boolean>(false);
 
   useEffect(() => {
     contact.map(c => {
@@ -58,7 +59,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog, handleSetOpenBackdrop }: { 
 
   const handleClickSubmitNewGroup = () => {
     if(uploadedImg) {
-      handleSetOpenBackdrop();
+      setBackdropLoading(prevState => !prevState);
       uploadImage(uploadedImg)
         .then(result => {
           if(result instanceof Error) throw result;
@@ -93,7 +94,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog, handleSetOpenBackdrop }: { 
           }
         })
         .catch(error => console.log(error))
-        .finally(() => handleSetOpenBackdrop());
+        .finally(() => setBackdropLoading(prevState => !prevState));
     } else {
       console.log('Group name can not be empty and at least select one contact');
     }
@@ -112,6 +113,10 @@ const GroupCreateDialog = ({ handleClickCloseDialog, handleSetOpenBackdrop }: { 
       </IconButton>
 
       {(cropper && tempImg) && <ImageCropper image={tempImg} saveCropImg={(cropImg) => setUploadedImg(cropImg)} closeCropper={() => setCropper(false)} />}
+
+      <Backdrop open={backdropLoading} sx={{ zIndex: '10000', }}>
+        <CircularProgress />
+      </Backdrop>
 
       <Box>
         <Typography variant='h5' align='center' gutterBottom={true} sx={{ fontWeight: 'bold', }}>Create a New Group</Typography>

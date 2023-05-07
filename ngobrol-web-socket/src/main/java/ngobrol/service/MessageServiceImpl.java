@@ -31,7 +31,12 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<User> findReceiversBySender(User sender) {
-        return messageRepository.findReceiversBySender(sender).orElseThrow(() -> new EntityNotFoundException("Receivers not found"));
+        return messageRepository.findReceiversBySender(sender).orElse(null);
+    }
+
+    @Override
+    public List<User> findSendersByReceiver(User receiver) {
+        return messageRepository.findSendersByReceiver(receiver).orElse(null);
     }
 
     @Override
