@@ -131,7 +131,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog, handleSetOpenBackdrop }: { 
             >
               {uploadedImg ?
                 <img src={URL.createObjectURL(uploadedImg)} alt='temporary uploaded image' style={{ width: '100%', height: '100%', }} /> :
-                <AddAPhotoOutlined sx={{ color: 'rgba(255, 255, 255, 0.7)', mx: 2, }} />
+                <AddAPhotoOutlined sx={{ color: 'rgba(255, 255, 255, 0.7)', }} />
               }
               <input
                 id='file-input-new-group' hidden accept='image/*' type='file'

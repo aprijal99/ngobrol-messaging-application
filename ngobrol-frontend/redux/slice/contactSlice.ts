@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {UserType} from './userSlice';
 
 type ContactState = {
@@ -15,10 +15,13 @@ const contactSlice = createSlice({
   reducers: {
     setInitialContact: (state, action) => {
       state.contact = action.payload;
-    }
+    },
+    addContact: (state, action: PayloadAction<UserType>) => {
+      state.contact = [...state.contact, action.payload];
+    },
   },
 });
 
-export const { setInitialContact } = contactSlice.actions;
+export const { setInitialContact, addContact } = contactSlice.actions;
 
 export default contactSlice.reducer;

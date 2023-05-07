@@ -3,8 +3,15 @@ import React, {useState} from 'react';
 import {UserType} from '../../../redux/slice/userSlice';
 import findContact from '../../../functions/findContact';
 import {Close} from '@mui/icons-material';
+import {useDispatch, useSelector, useStore} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store/store';
+import {ApiType} from '../../../types/api';
+import {addContact} from '../../../redux/slice/contactSlice';
 
 const AddContactDialog = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const store = useStore<RootState>();
+  const { contact } = useSelector((state: RootState) => state.contact);
   const [newContact, setNewContact] = useState<UserType | null | 'notFound'>(null);
   const [alert, setAlert] = useState(false);
 
@@ -12,15 +19,48 @@ const AddContactDialog = () => {
     const newContactInput = document.getElementById('new-contact-input') as HTMLInputElement;
     const newContactEmail: string = newContactInput ? newContactInput.value : '';
 
-    findContact(newContactEmail)
-      .then(result => {
-        if(result instanceof Error) throw new Error('Contact not found');
-        else setNewContact(result);
+    if(newContactEmail !== '') {
+      const foundInContactList: UserType | undefined = contact.filter(c => c.email === newContactEmail)[0];
+
+      if(foundInContactList !== undefined) {
+        setNewContact(foundInContactList);
+      } else {
+        findContact(newContactEmail)
+          .then(result => {
+            if(result instanceof Error) throw new Error('Contact not found');
+            else setNewContact(result);
+          })
+          .catch(() => {
+            setNewContact('notFound');
+            setAlert(true);
+          });
+      }
+    }
+  }
+
+  const handleClickSaveNewContact = () => {
+    if(newContact !== null && newContact !== 'notFound') {
+      const formBody: { [n: string]: any } = {
+        userEmail: store.getState().user.user.email,
+        contactEmail: newContact.email,
+      }
+
+      fetch('http://localhost:7080/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formBody),
       })
-      .catch(() => {
-        setNewContact('notFound');
-        setAlert(true);
-      });
+        .then(fetchResult => fetchResult.json())
+        .then((result: ApiType) => {
+          if(result.code !== 201) throw new Error('Something went wrong');
+          else {
+            dispatch(addContact(newContact));
+          }
+        })
+        .catch(error => console.log(error));
+    }
   }
 
   return (
@@ -53,7 +93,10 @@ const AddContactDialog = () => {
             <Typography sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', }}>{newContact.name}</Typography>
             <Typography sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', fontSize: '.85rem', fontWeight: '300', color: 'rgba(255, 255, 255, 0.6)', }}>{newContact.email}</Typography>
           </Box>
-          <Button variant='outlined' size='small' sx={{ textTransform: 'capitalize', borderRadius: '20px', minWidth: '60px', ':hover': { backgroundColor: 'initial', }, }}>Add</Button>
+          {contact.some(c => c.email === newContact.email) ?
+            <Button variant='outlined' size='small' color='error' sx={{ textTransform: 'capitalize', borderRadius: '20px', minWidth: '60px', ':hover': { backgroundColor: 'initial', }, }}>Delete</Button> :
+            <Button variant='outlined' size='small' onClick={handleClickSaveNewContact} sx={{ textTransform: 'capitalize', borderRadius: '20px', minWidth: '60px', ':hover': { backgroundColor: 'initial', }, }}>Add</Button>
+          }
         </Box>
       </Box>}
 
