@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +34,8 @@ public class GroupMessageServiceImpl implements GroupMessageService {
     @Override
     public List<GroupMessage> findGroupMessagesByGroupChatTopRecord(List<GroupChat> groupChats) {
         return groupChats.stream()
-                .map(groupChat -> groupMessageRepository.findTopByGroupChatOrderByCreatedAtDesc(groupChat).get())
+                .map(groupChat -> groupMessageRepository.findTopByGroupChatOrderByCreatedAtDesc(groupChat).orElse(null))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 

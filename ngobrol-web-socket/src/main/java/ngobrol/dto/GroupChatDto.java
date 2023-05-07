@@ -22,6 +22,16 @@ public class GroupChatDto {
         this.createdAt = createdAt;
     }
 
+    public GroupChatDto(Integer groupId, String name, String description, String imageUrl, Integer userNumber, List<UserDto> users, Long createdAt) {
+        this.groupId = groupId;
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.userNumber = userNumber;
+        this.users = users;
+        this.createdAt = createdAt;
+    }
+
     public Integer getGroupId() {
         return groupId;
     }

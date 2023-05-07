@@ -82,10 +82,18 @@ public class GroupChatRestController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> newGroup(@RequestBody GroupChatDto groupChatDto) {
-        GroupChat groupChat = groupChatService.dtoToEntity(groupChatDto);
-        groupChatService.saveGroupChat(groupChat);
+        try {
+            GroupChat groupChat = groupChatService.dtoToEntity(groupChatDto);
+            groupChatService.saveGroupChat(groupChat);
 
-        return ResponseUtil.noData(HttpStatus.CREATED);
+            groupChatDto.getUsers().stream()
+                    .map(userDto -> userService.findUserByEmail(userDto.getEmail()))
+                    .forEach(user -> userGroupService.saveUserGroup(new UserGroup(user, groupChat)));
+
+            return ResponseUtil.withData(HttpStatus.CREATED, groupChatService.entityToDto(groupChat));
+        } catch (Exception e) {
+            return ResponseUtil.noData(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping(path = "/assign-user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

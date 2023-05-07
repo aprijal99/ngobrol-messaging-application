@@ -9,7 +9,6 @@ import ngobrol.repository.GroupChatRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,24 +43,18 @@ public class GroupChatServiceImpl implements GroupChatService {
 
     @Override
     public GroupChatDto entityToDto(GroupChat groupChat) {
-        return new GroupChatDto(groupChat.getGroupId(), groupChat.getName(), groupChat.getDescription(), groupChat.getImageUrl(), groupChat.getCreatedAt().getTime());
+        List<UserGroup> userGroupsByGroup = userGroupService.findUserGroupsByGroup(groupChat);
+        List<User> users = userGroupsByGroup.stream().map(UserGroup::getUser).collect(Collectors.toList());
+        List<UserDto> userDtoList = userService.listEntityToListDto(users);
+        Integer userNumber = userGroupsByGroup.size();
+
+        return new GroupChatDto(groupChat.getGroupId(), groupChat.getName(), groupChat.getDescription(), groupChat.getImageUrl(), userNumber, userDtoList, groupChat.getCreatedAt().getTime());
     }
 
     @Override
     public List<GroupChatDto> listEntityToListDto(List<GroupChat> groupChats) {
         return groupChats.stream()
-                .map(groupChat -> {
-                    List<UserGroup> userGroupsByGroup = userGroupService.findUserGroupsByGroup(groupChat);
-                    List<User> users = userGroupsByGroup.stream().map(UserGroup::getUser).collect(Collectors.toList());
-                    List<UserDto> userDtoList = userService.listEntityToListDto(users);
-                    Integer userNumber = userGroupsByGroup.size();
-
-                    GroupChatDto groupChatDto = this.entityToDto(groupChat);
-                    groupChatDto.setUserNumber(userNumber);
-                    groupChatDto.setUsers(userDtoList);
-
-                    return groupChatDto;
-                })
+                .map(this::entityToDto)
                 .collect(Collectors.toList());
     }
 }
