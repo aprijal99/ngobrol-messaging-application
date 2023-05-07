@@ -11,14 +11,13 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/store/store';
+import {useDispatch, useSelector, useStore} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store/store';
 import {AddAPhotoOutlined, ArrowBackIosNew} from '@mui/icons-material';
 import ImageCropper from './ImageCropper';
 import uploadImage from '../../../functions/uploadImage';
 import {ApiType} from '../../../types/api';
-import {Simulate} from 'react-dom/test-utils';
-import error = Simulate.error;
+import {addGroup, GroupType} from '../../../redux/slice/groupSlice';
 
 const CustomTableCell = ({ children, padding = 'none' }: { children: ReactNode, padding?: 'none' | 'normal' | 'checkbox' | undefined, }) => {
   return (
@@ -28,7 +27,9 @@ const CustomTableCell = ({ children, padding = 'none' }: { children: ReactNode, 
   );
 }
 
-const GroupCreateDialog = () => {
+const GroupCreateDialog = ({ handleClickCloseDialog, handleSetOpenBackdrop }: { handleClickCloseDialog: () => void, handleSetOpenBackdrop: () => void, }) => {
+  const user = useStore<RootState>().getState().user.user;
+  const dispatch = useDispatch<AppDispatch>();
   const { contact } = useSelector((state: RootState) => state.contact);
   const [addContacts, setAddContacts] = useState<{ name: string, email: string, }[]>([]);
   const [checked, setChecked] = useState<{ [n: string]: boolean }>({});
@@ -57,6 +58,7 @@ const GroupCreateDialog = () => {
 
   const handleClickSubmitNewGroup = () => {
     if(uploadedImg) {
+      handleSetOpenBackdrop();
       uploadImage(uploadedImg)
         .then(result => {
           if(result instanceof Error) throw result;
@@ -68,7 +70,7 @@ const GroupCreateDialog = () => {
               name: groupName,
               description: groupDesc,
               imageUrl: result,
-              users: addContacts,
+              users: [{ name: user.name, email: user.email }, ...addContacts],
               createdAt: new Date().getTime(),
             }
 
@@ -80,14 +82,18 @@ const GroupCreateDialog = () => {
               body: JSON.stringify(formBody),
             })
               .then(fetchResult => fetchResult.json())
-              .then((result: ApiType) => {
+              .then((result: ApiType<GroupType>) => {
                 if(result.code !== 201) throw new Error('Something went wrong');
-                else console.log('Group created successfully');
+                else {
+                  dispatch(addGroup(result.data));
+                  handleClickCloseDialog();
+                }
               })
               .catch(error => console.log(error));
           }
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error))
+        .finally(() => handleSetOpenBackdrop());
     } else {
       console.log('Group name can not be empty and at least select one contact');
     }

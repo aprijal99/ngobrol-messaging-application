@@ -5,17 +5,19 @@ import GroupList from './GroupList';
 import {GroupAddOutlined} from '@mui/icons-material';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
-import {IconButton, Tooltip} from '@mui/material';
-import {useState} from 'react';
+import {Backdrop, CircularProgress, IconButton, Tooltip} from '@mui/material';
+import React, {useState} from 'react';
 import DialogContainer from '../dialog/DialogContainer';
 import AddGroupDialog from '../dialog/AddGroupDialog';
 import GroupCreateDialog from '../dialog/GroupCreateDialog';
 import GroupJoinDialog from '../dialog/GroupJoinDialog';
 
 const NewGroupButton = () => {
-  const [open, setOpen] = useState<boolean>(false);
-  const handleClickOpenDialog = () => setOpen(true);
-  const handleClickCloseDialog = () => setOpen(false);
+  const [openAddGroupDialog, setOpenAddGroupDialog] = useState<boolean>(false);
+  const [openBackdrop, setOpenBackdrop] = useState<boolean>(false);
+  const handleClickOpenDialog = () => setOpenAddGroupDialog(true);
+  const handleClickCloseDialog = () => setOpenAddGroupDialog(false);
+  const handleSetOpenBackdrop = () => setOpenBackdrop(prevState => !prevState);
 
   return (
     <>
@@ -24,24 +26,32 @@ const NewGroupButton = () => {
           <GroupAddOutlined />
         </IconButton>
       </Tooltip>
-      <DialogContainer open={open} handleClickCloseDialog={handleClickCloseDialog}>
+      <DialogContainer open={openAddGroupDialog} handleClickCloseDialog={handleClickCloseDialog}>
         <AddGroupDialog />
-        <GroupCreateDialog />
+        <GroupCreateDialog handleClickCloseDialog={handleClickCloseDialog} handleSetOpenBackdrop={handleSetOpenBackdrop} />
         <GroupJoinDialog />
       </DialogContainer>
+      <Backdrop open={openBackdrop} sx={{ zIndex: '10000', }}>
+        <CircularProgress />
+      </Backdrop>
     </>
   );
 }
 
 const Group = () => {
   const { group } = useSelector((state: RootState) => state.group);
+  const sortedGroup = [...group].sort((a, b) => {
+    if(a.name < b.name) return -1;
+    if(a.name > b.name) return 1;
+    return 0;
+  });
 
   return (
     <>
       <MainMenuTitle title='Groups' addIcon={<NewGroupButton />} />
       <SearchBar placeholder='Search or create a new group' />
       <ScrollableContainer reducedHeight='130px'>
-        {group.map(g => <GroupList key={g.groupId} groupList={g} />)}
+        {sortedGroup.map(g => <GroupList key={g.groupId} groupList={g} />)}
       </ScrollableContainer>
     </>
   );

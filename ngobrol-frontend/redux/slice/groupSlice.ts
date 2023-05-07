@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {UserType} from './userSlice';
 
 export type GroupType = {
@@ -26,9 +26,12 @@ const groupSlice = createSlice({
     setInitialGroup: (state, action) => {
       state.group = action.payload;
     },
+    addGroup: (state, action: PayloadAction<GroupType>) => {
+      state.group = [...state.group, action.payload];
+    },
   },
 });
 
-export const { setInitialGroup } = groupSlice.actions;
+export const { setInitialGroup, addGroup } = groupSlice.actions;
 
 export default groupSlice.reducer;
