@@ -4,36 +4,32 @@ import ngobrol.dto.GroupMessageDto;
 import ngobrol.dto.MessageDto;
 import ngobrol.entity.*;
 import ngobrol.service.*;
-import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
 @Controller
 public class MessageController {
-    private final RabbitMessagingTemplate rabbitMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private final UserService userService;
     private final MessageService messageService;
     private final GroupChatService groupChatService;
     private final UserGroupService userGroupService;
     private final GroupMessageService groupMessageService;
 
-    public MessageController(RabbitMessagingTemplate rabbitMessagingTemplate,
-                             UserService userService,
+    public MessageController(SimpMessagingTemplate simpMessagingTemplate, UserService userService,
                              MessageService messageService,
                              GroupChatService groupChatService,
                              UserGroupService userGroupService, GroupMessageService groupMessageService) {
-        this.rabbitMessagingTemplate = rabbitMessagingTemplate;
+        this.simpMessagingTemplate = simpMessagingTemplate;
         this.userService = userService;
         this.messageService = messageService;
         this.groupChatService = groupChatService;
         this.userGroupService = userGroupService;
         this.groupMessageService = groupMessageService;
-
-        this.rabbitMessagingTemplate.setMessageConverter(new MappingJackson2MessageConverter());
     }
 
     @MessageMapping("/group-message")
@@ -53,7 +49,7 @@ public class MessageController {
                 continue;
             }
 
-            rabbitMessagingTemplate.convertAndSend("amq.direct", userGroup.getUser().getEmail() + "-group", groupMessageDto);
+            simpMessagingTemplate.convertAndSend("/topic/" + userGroup.getUser().getEmail() + "-group", groupMessageDto);
         }
 
         return groupMessageDto;
@@ -67,7 +63,7 @@ public class MessageController {
         Message message = messageService.dtoToEntity(messageDto, sender, receiver);
         messageService.saveMessage(message);
 
-        rabbitMessagingTemplate.convertAndSend("amq.direct", messageDto.getReceiverEmail(), messageDto);
+        simpMessagingTemplate.convertAndSend("/topic/" + messageDto.getReceiverEmail(), messageDto);
 
         return messageDto;
     }

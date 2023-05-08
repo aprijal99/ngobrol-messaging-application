@@ -5,7 +5,7 @@ import ChatList from './ChatList';
 import {LibraryAddOutlined, PeopleAltOutlined, PersonOutlineOutlined} from '@mui/icons-material';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux/store/store';
-import {CircularProgress, IconButton, ListItemIcon, Menu, MenuItem, Tooltip} from '@mui/material';
+import {CircularProgress, IconButton, ListItemIcon, Menu, MenuItem} from '@mui/material';
 import React, {useState} from 'react';
 import {changeActiveMenu} from '../../../redux/slice/menuSlice';
 
@@ -38,11 +38,9 @@ const NewChatButton = () => {
 
   return (
     <>
-      <Tooltip title='New Chat' placement='left' enterDelay={500} disableInteractive>
-        <IconButton onClick={handleClick} sx={{ cursor: 'pointer', }}>
-          <LibraryAddOutlined />
-        </IconButton>
-      </Tooltip>
+      <IconButton onClick={handleClick} sx={{ cursor: 'pointer', }}>
+        <LibraryAddOutlined />
+      </IconButton>
       <Menu
         id='add-chat-menu' anchorEl={anchorEl} open={open}
         onClose={() => setAnchorEl(null)}

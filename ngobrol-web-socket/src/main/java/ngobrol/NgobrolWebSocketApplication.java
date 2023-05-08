@@ -24,10 +24,10 @@ public class NgobrolWebSocketApplication {
 									UserGroupService userGroupService,
 									GroupMessageService groupMessageService) {
 		return args -> {
-			User ghiyas = new User("Aprijal Ghiyas Setiawan", "aprijalghiyas@gmail.com", "subang12345", "USER", "Available", null, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
-			User ainun = new User("Ainun Nisa", "ainunnisa@gmail.com", "bandung2002", "USER", "Available", null, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
-			User deki = new User("Deki Geraldi", "dekigeraldi@gmail.com", "ciater12345", "USER", "Available", null, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
-			User irsyad = new User("Irsyad Ibadurrahman", "irsyadibadurrahman@gmail.com", "bekasi12345", "USER", "Available", null, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+			User ghiyas = new User("Aprijal Ghiyas Setiawan", "aprijalghiyas@gmail.com", "subang12345", "USER", "Available", "2f5d3425-db14-4f88-9832-c2751457d9f2.png", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+			User ainun = new User("Ainun Nisa", "ainunnisa@gmail.com", "bandung2002", "USER", "Available", "008794dd-1b71-424a-8b00-5648a5a6d42d.png", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+			User deki = new User("Deki Geraldi", "dekigeraldi@gmail.com", "ciater12345", "USER", "Available", "869ebbad-ecf3-4517-9919-55698d055c11.png", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+			User irsyad = new User("Irsyad Ibadurrahman", "irsyadibadurrahman@gmail.com", "bekasi12345", "USER", "Available", "dee487f7-bb6e-43b9-901a-96207bc8dd2d.png", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
 
 			userService.saveUser(ghiyas);
 			userService.saveUser(ainun);

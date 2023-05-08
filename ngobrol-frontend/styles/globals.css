@@ -12,6 +12,10 @@
   transform: translateX(-100%);
 }
 
+.translate-x-100-percent {
+  transform: translateX(100%);
+}
+
 .transform-none {
   transform: none;
 }

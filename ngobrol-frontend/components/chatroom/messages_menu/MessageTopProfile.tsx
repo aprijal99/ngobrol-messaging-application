@@ -11,7 +11,7 @@ const ContactProfile = ({ contactEmail }: { contactEmail: string, }) => {
 
   return (
     <>
-      <ProfileAvatar />
+      <ProfileAvatar imageUrl={contactByEmail.imageUrl} />
       <Box sx={{ display: 'flex', flexGrow: '1', flexDirection: 'column', justifyContent: 'center', }}>
         <Typography sx={{ fontWeight: 'bold', }} >{contactByEmail.name}</Typography>
         <Typography sx={{ fontSize: '.9rem', color: 'rgba(255, 255, 255, 0.6)', }}>Last seen 2 hours ago</Typography>
@@ -26,7 +26,7 @@ const GroupProfile = ({ groupId }: { groupId: number, }) => {
 
   return (
     <>
-      <ProfileAvatar />
+      <ProfileAvatar imageUrl={groupById.imageUrl} />
       <Box sx={{ display: 'flex', flexGrow: '1', flexDirection: 'column', justifyContent: 'center', }}>
         <Typography sx={{ fontWeight: 'bold', }} >{groupById.name}</Typography>
         <Typography sx={{ fontSize: '.9rem', color: 'rgba(255, 255, 255, 0.6)', }}>{groupById.userNumber} members, 2 online</Typography>
@@ -49,7 +49,10 @@ const Arrow = () => {
 
   const handleOnClickArrowBack = (e: React.MouseEvent) => {
     e.stopPropagation();
+    const profileDetail = document.getElementById('profile-detail');
+
     if(messageMenu && messageMenu.classList.contains('left-0')) {
+      if(profileDetail) profileDetail.classList.remove('transform-none');
       messageMenu.classList.remove('left-0');
 
       if(arrowBackRef.current && arrowForwardRef.current) {
@@ -92,7 +95,6 @@ const MessageTopProfile = () => {
       }
     } else if(profileDetail && messageMenu && (window.innerWidth >= 950)) {
       profileDetail.classList.add('transform-none');
-
       messageMenu.classList.add('left-0');
 
       if(arrowBack && arrowForward) {

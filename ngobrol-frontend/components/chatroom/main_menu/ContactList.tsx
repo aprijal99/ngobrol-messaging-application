@@ -24,7 +24,7 @@ const ContactList = ({ name, status, email, imageUrl }: { name: string, status: 
         ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)', },
       }}
     >
-      <ProfileAvatar />
+      <ProfileAvatar imageUrl={imageUrl} />
       <Box sx={{ display: 'flex', flexGrow: '1', flexDirection: 'column', justifyContent: 'center', }}>
         <Typography sx={{ fontWeight: 'bold', }} >{name}</Typography>
         <Typography sx={{ fontSize: '.9rem', color: 'rgba(255, 255, 255, 0.6)', }} >{status}</Typography>

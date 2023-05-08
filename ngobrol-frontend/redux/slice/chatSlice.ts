@@ -6,6 +6,7 @@ export type ChatType = {
     fileUrl: string,
     createdAt: number,
     contactOrGroupName: string,
+    imageUrl: string,
   },
 }
 
@@ -20,6 +21,7 @@ const initialState: ChatState = {
       fileUrl: 'lorem ipsum',
       createdAt: 0,
       contactOrGroupName: 'lorem ipsum',
+      imageUrl: '',
     },
   },
 }

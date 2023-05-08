@@ -5,7 +5,7 @@ import ContactList from './ContactList';
 import {PersonAddAlt1Outlined} from '@mui/icons-material';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
-import {IconButton, Tooltip} from '@mui/material';
+import {IconButton} from '@mui/material';
 import {useState} from 'react';
 import AddContactDialog from '../dialog/AddContactDialog';
 import DialogContainer from '../dialog/DialogContainer';
@@ -17,11 +17,9 @@ const NewContactButton = () => {
 
   return (
     <>
-      <Tooltip title='Add New Contact' placement='left' enterDelay={500} disableInteractive onClick={handleClickOpenDialog}>
-        <IconButton sx={{ cursor: 'pointer', }}>
-          <PersonAddAlt1Outlined />
-        </IconButton>
-      </Tooltip>
+      <IconButton onClick={handleClickOpenDialog} sx={{ cursor: 'pointer', }}>
+        <PersonAddAlt1Outlined />
+      </IconButton>
       <DialogContainer open={open} handleClickCloseDialog={handleClickCloseDialog}>
         <AddContactDialog />
       </DialogContainer>

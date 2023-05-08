@@ -5,7 +5,7 @@ import GroupList from './GroupList';
 import {GroupAddOutlined} from '@mui/icons-material';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
-import {IconButton, Tooltip} from '@mui/material';
+import {IconButton} from '@mui/material';
 import React, {useState} from 'react';
 import DialogContainer from '../dialog/DialogContainer';
 import AddGroupDialog from '../dialog/AddGroupDialog';
@@ -19,11 +19,9 @@ const NewGroupButton = () => {
 
   return (
     <>
-      <Tooltip title='Add New Group' placement='left' enterDelay={500} disableInteractive onClick={handleClickOpenDialog}>
-        <IconButton sx={{ cursor: 'pointer', }}>
-          <GroupAddOutlined />
-        </IconButton>
-      </Tooltip>
+      <IconButton onClick={handleClickOpenDialog} sx={{ cursor: 'pointer', }}>
+        <GroupAddOutlined />
+      </IconButton>
       <DialogContainer open={openAddGroupDialog} handleClickCloseDialog={handleClickCloseDialog}>
         <AddGroupDialog />
         <GroupCreateDialog handleClickCloseDialog={handleClickCloseDialog} />

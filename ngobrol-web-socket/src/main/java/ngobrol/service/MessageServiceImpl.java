@@ -79,9 +79,11 @@ public class MessageServiceImpl implements MessageService {
             ChatDto chatDto = this.entityToChat(message);
             if (!message.getSender().getEmail().equals(userEmail)) {
                 chatDto.setContactOrGroupName(message.getSender().getName());
+                chatDto.setImageUrl(message.getSender().getImageUrl());
                 chat.put(message.getSender().getEmail(), chatDto);
             } else {
                 chatDto.setContactOrGroupName(message.getReceiver().getName());
+                chatDto.setImageUrl(message.getReceiver().getImageUrl());
                 chat.put(message.getReceiver().getEmail(), chatDto);
             }
         });

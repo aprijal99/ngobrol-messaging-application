@@ -33,6 +33,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void updateUser(String currentEmail, UserDto userDto) {
+        User user = this.findUserByEmail(currentEmail);
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        if (userDto.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
+        user.setStatus(userDto.getStatus());
+        user.setImageUrl(userDto.getImageUrl());
+        user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public boolean checkPassword(String email, String password) {
+        String encodedPassword = userRepository.findPasswordByEmail(email);
+
+        return encodedPassword.equals(passwordEncoder.encode(password));
+    }
+
+    @Override
     public User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email).orElse(null);
     }

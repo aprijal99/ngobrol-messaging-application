@@ -5,6 +5,7 @@ public class ChatDto {
     private String fileUrl;
     private Long createdAt;
     private String contactOrGroupName;
+    private String imageUrl;
 
     public ChatDto() {
     }
@@ -46,6 +47,14 @@ public class ChatDto {
 
     public void setContactOrGroupName(String contactOrGroupName) {
         this.contactOrGroupName = contactOrGroupName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override

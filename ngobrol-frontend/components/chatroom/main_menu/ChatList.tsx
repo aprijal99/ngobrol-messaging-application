@@ -6,7 +6,7 @@ import {setGroupId, setReceiverEmail} from '../../../redux/slice/sentMessageSlic
 import {changeToGroupChat, changeToPrivateChat} from '../../../functions/activeChat';
 import ProfileAvatar from '../ProfileAvatar';
 
-const ChatList = ({ chatId, chat }: { chatId: string | number, chat: { message: string, fileUrl: string, createdAt: number, contactOrGroupName: string, }, }) => {
+const ChatList = ({ chatId, chat }: { chatId: string | number, chat: { message: string, fileUrl: string, createdAt: number, contactOrGroupName: string, imageUrl: string, }, }) => {
   const date = new Date(chat.createdAt);
   let displayedDate: string = date.toLocaleDateString();
   if(((new Date().getTime() - date.getTime()) / (1000 * 60 * 60)) < 24) {
@@ -58,7 +58,7 @@ const ChatList = ({ chatId, chat }: { chatId: string | number, chat: { message: 
         ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)', },
       }}
     >
-      <ProfileAvatar />
+      <ProfileAvatar imageUrl={chat.imageUrl} />
       <Box sx={{ display: 'flex', flexGrow: '1', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', }} >
           <Typography sx={{ fontWeight: 'bold', }} >{chat.contactOrGroupName}</Typography>

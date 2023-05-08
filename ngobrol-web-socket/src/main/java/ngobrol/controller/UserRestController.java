@@ -38,4 +38,19 @@ public class UserRestController {
 
         return ResponseUtil.noData(HttpStatus.CREATED);
     }
+
+    @PostMapping(path = "/check-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> checkPassword(@RequestBody UserDto userDto) {
+        boolean result = userService.checkPassword(userDto.getEmail(), userDto.getPassword());
+
+        if (result) return ResponseUtil.noData(HttpStatus.OK);
+        else return ResponseUtil.noData(HttpStatus.FORBIDDEN);
+    }
+
+    @PutMapping(path = "/{email}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateUser(@PathVariable(name = "email") String currentEmail, @RequestBody UserDto userDto) {
+        userService.updateUser(currentEmail, userDto);
+
+        return ResponseUtil.noData(HttpStatus.OK);
+    }
 }

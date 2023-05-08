@@ -24,6 +24,7 @@ import fetchGroup from '../functions/fetchGroup';
 import {setInitialGroup} from '../redux/slice/groupSlice';
 import {addIncomingGroupMessage, GroupMessageType} from '../redux/slice/groupMessageSlice';
 import ProfileDetail from '../components/chatroom/messages_menu/ProfileDetail';
+import UserDetail from '../components/chatroom/left_menu/UserDetail';
 
 type HomeProps = { userEmail: string, }
 
@@ -56,13 +57,13 @@ const Home = ({ userEmail }: HomeProps) => {
   }
 
   const onSuccess = () => {
-    stompClient.subscribe(`/exchange/amq.direct/${userEmail}`, (payload: Message) => {
+    stompClient.subscribe(`/topic/${userEmail}`, (payload: Message) => {
       const message: MessageType = JSON.parse(payload.body);
       dispatch(addIncomingMessage({ email: message.senderEmail, message: message, }));
       dispatch(changeOneCurrentPrivateChat({ email: message.senderEmail, message: message, }));
     });
 
-    stompClient.subscribe(`/exchange/amq.direct/${userEmail}-group`, (payload: Message) => {
+    stompClient.subscribe(`/topic/${userEmail}-group`, (payload: Message) => {
       const groupMessage: GroupMessageType = JSON.parse(payload.body);
       dispatch(addIncomingGroupMessage({ groupId: groupMessage.groupId, groupMessage: groupMessage, }));
       dispatch(changeOneCurrentGroupChat({ groupId: groupMessage.groupId, groupMessage: groupMessage, }))
@@ -75,7 +76,7 @@ const Home = ({ userEmail }: HomeProps) => {
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden', position: 'relative', }}>
       <Box
         sx={{
-          display: 'grid', gridTemplateColumns: '60px calc(100% - 60px)', minWidth: '100%', width: '100%', overflow: 'hidden',
+          display: 'grid', gridTemplateColumns: '60px calc(100% - 60px)', minWidth: '100%', width: '100%', overflow: 'hidden', position: 'relative',
           '@media (min-width: 450px)': { gridTemplateColumns: '80px calc(100% - 80px)', },
           '@media (min-width: 620px)': { minWidth: '480px', width: '480px', },
           transition: 'width 225ms cubic-bezier(0, 0, 0.2, 1) 0ms, min-width 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
@@ -86,6 +87,9 @@ const Home = ({ userEmail }: HomeProps) => {
 
         {/* Main Menu */}
         <MainMenu />
+
+        {/* User Detail */}
+        <UserDetail />
       </Box>
 
       {/* MessageList Menu */}
