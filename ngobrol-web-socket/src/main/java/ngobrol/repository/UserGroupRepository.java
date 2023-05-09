@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface UserGroupRepository extends JpaRepository<UserGroup, Integer> {
     Optional<List<UserGroup>> findUserGroupsByUser(User user);
     Optional<List<UserGroup>> findUserGroupsByGroupChat(GroupChat groupChat);
+    void deleteUserGroupByUserAndGroupChat(User user, GroupChat groupChat);
 }

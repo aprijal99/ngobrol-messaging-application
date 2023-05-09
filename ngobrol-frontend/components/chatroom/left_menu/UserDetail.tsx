@@ -23,7 +23,9 @@ const UserDetail = () => {
       id='user-detail' className='translate-x-minus-100-percent'
       sx={{
         position: 'absolute', top: '0', left: '0', backgroundColor: '#252525', width: '100%', height: '100%',
-        overflow: 'hidden', transition: 'transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
+        overflowX: 'hidden', overflowY: 'auto', transition: 'transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
+        '::-webkit-scrollbar': { width: '5px', }, '::-webkit-scrollbar-thumb': { borderRadius: '5px', visibility: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.3)', },
+        ':hover': { '::-webkit-scrollbar-thumb': { visibility: 'visible', }, },
       }}
     >
       <Box display='flex' alignItems='center' sx={{ p: '10px', pb: 3, }}>

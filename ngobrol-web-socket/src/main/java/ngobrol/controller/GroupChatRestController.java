@@ -106,4 +106,12 @@ public class GroupChatRestController {
 
         return ResponseUtil.noData(HttpStatus.CREATED);
     }
+
+    @DeleteMapping(path = "/delete-user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteUserFromGroup(@RequestBody UserGroupDto userGroupDto) {
+        User user = userService.findUserByEmail(userGroupDto.getUserEmail());
+        GroupChat groupChat = groupChatService.findGroupChatById(userGroupDto.getGroupChatId());
+
+        return ResponseUtil.noData(HttpStatus.OK);
+    }
 }

@@ -77,9 +77,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog }: { handleClickCloseDialog:
 
             fetch('http://localhost:7080/group', {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
+              headers: { 'Content-Type': 'application/json', },
               body: JSON.stringify(formBody),
             })
               .then(fetchResult => fetchResult.json())

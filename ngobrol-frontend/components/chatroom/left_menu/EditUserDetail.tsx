@@ -128,7 +128,7 @@ const EditUserDetail = () => {
       id='edit-user-detail'
       className='translate-x-100-percent'
       sx={{
-        position: 'absolute', top: '0', left: '0', backgroundColor: '#252525', width: '100%', height: '100%',
+        position: 'absolute', top: '0', left: '0', backgroundColor: '#252525', width: '100%', minHeight: '100%',
         overflow: 'hidden', transition: 'transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
       }}
     >
@@ -178,17 +178,15 @@ const EditUserDetail = () => {
         <FormControlLabel control={<Switch size='small' onChange={() => setChangePass(prevState => !prevState)} />} label="Change password" sx={{ m: 0, }} />
         <TextField id='current-user-password-input' fullWidth disabled={!changePass} size='small' label='Current password' variant='outlined' autoComplete='nope' type='password' sx={{ '.MuiInputBase-root': { borderRadius: '10px', } }} />
         <TextField id='new-user-password-input' fullWidth disabled={!changePass} size='small' label='New password' variant='outlined' autoComplete='nope' type='password' sx={{ '.MuiInputBase-root': { borderRadius: '10px', } }} />
-        <Box sx={{ textAlign: 'right', }}>
-          <Button
-            variant='contained' size='small' onClick={handleClickUpdateUserDetail}
-            sx={{
-              textTransform: 'capitalize', boxShadow: 'none', fontSize: 'initial', maxWidth: '100px', borderRadius: '10px',
-              ':hover': { backgroundColor: '#199bf1', boxShadow: 'none', },
-            }}
-          >
-            Save
-          </Button>
-        </Box>
+        <Button
+          variant='contained' size='small' onClick={handleClickUpdateUserDetail}
+          sx={{
+            textTransform: 'capitalize', boxShadow: 'none', fontSize: 'initial', borderRadius: '10px',
+            ':hover': { backgroundColor: '#199bf1', boxShadow: 'none', },
+          }}
+        >
+          Save
+        </Button>
       </Box>
     </Box>
   );

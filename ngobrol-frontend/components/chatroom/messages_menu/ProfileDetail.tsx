@@ -3,6 +3,7 @@ import {AlternateEmailOutlined, Close, EditOutlined, InfoOutlined, InsertLinkOut
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
 import React, {useState} from 'react';
+import EditProfileDetail from './EditProfileDetail';
 
 const ContactProfileDetail = () => {
   const { contact } = useSelector((state: RootState) => state.contact);
@@ -93,7 +94,7 @@ const GroupProfileDetail = () => {
       <Divider sx={{ mt: '-9px', mb: '9px', }} />
       {groupById.users.map((user, idx) => <Box key={idx} sx={{ display: 'flex', p: 1, mx: 1.5, cursor: 'pointer', borderRadius: '10px', ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)', }, }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
-          <Avatar alt='Contact Profile Image' src='https://i.pravatar.cc/150?u=a042581f4e29026024d' />
+          <Avatar alt='Contact Profile Image' src={user.imageUrl ? `http://localhost:7080/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
         </Box>
         <Box>
           <Typography>{user.name}</Typography>
@@ -115,11 +116,16 @@ const ProfileDetail = () => {
     if(messageMenu) messageMenu.style.marginRight = '0px';
   }
 
+  const handleClickOpenEditProfileDetail = () => {
+    const editProfileDetail = document.getElementById("edit-profile-detail") as HTMLDivElement;
+    if(editProfileDetail) editProfileDetail.classList.remove("translate-x-minus-100-percent");
+  }
+
   return (
     <Box
       id='profile-detail'
       sx={{
-        minWidth: '100%', maxWidth: '100%', height: '100%', transform: 'translateX(100%)', overflowY: 'auto',
+        minWidth: '100%', maxWidth: '100%', height: '100%', transform: 'translateX(100%)', overflowY: 'auto', overflowX: 'hidden',
         position: 'absolute',  right: '0', top: '0', boxShadow: 'none', backgroundColor: '#252525',
         '@media (min-width: 620px)': { minWidth: '400px', maxWidth: '400px', transform: 'translateX(400px)', },
         '@media (min-width: 1300px)': { boxShadow: 'none', }, transition: 'transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
@@ -133,11 +139,12 @@ const ProfileDetail = () => {
           <Close fontSize='inherit' sx={{ color: 'rgba(255, 255, 255, 0.6)', }} />
         </IconButton>
         <Typography sx={{ flexGrow: '1', fontSize: '1.2rem', fontWeight: '600', ml: 2, color: 'rgba(255, 255, 255, 0.6)', }}>Contact Detail</Typography>
-        <IconButton>
+        {chatMode === 'group' && <IconButton onClick={handleClickOpenEditProfileDetail}>
           <EditOutlined fontSize='inherit' sx={{ color: 'rgba(255, 255, 255, 0.6)', }} />
-        </IconButton>
+        </IconButton>}
       </Box>
       {chatMode === 'private' ? <ContactProfileDetail /> : <GroupProfileDetail />}
+      {chatMode === 'group' && <EditProfileDetail />}
     </Box>
   );
 }

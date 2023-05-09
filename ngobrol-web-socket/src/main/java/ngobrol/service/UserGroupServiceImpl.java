@@ -47,4 +47,9 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroup dtoToEntity(User user, GroupChat groupChat) {
         return new UserGroup(user, groupChat);
     }
+
+    @Override
+    public void deleteUserGroup(User user, GroupChat groupChat) {
+        userGroupRepository.deleteUserGroupByUserAndGroupChat(user, groupChat);
+    }
 }
