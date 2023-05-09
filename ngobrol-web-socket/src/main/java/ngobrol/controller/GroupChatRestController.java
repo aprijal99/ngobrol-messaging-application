@@ -112,6 +112,18 @@ public class GroupChatRestController {
         User user = userService.findUserByEmail(userGroupDto.getUserEmail());
         GroupChat groupChat = groupChatService.findGroupChatById(userGroupDto.getGroupChatId());
 
-        return ResponseUtil.noData(HttpStatus.OK);
+        Integer n = userGroupService.deleteUserGroup(user, groupChat);
+
+        System.out.println(userGroupDto);
+        System.out.println(user);
+        System.out.println(groupChat);
+        System.out.println(n);
+
+        if(n == 1) {
+            return ResponseUtil.noData(HttpStatus.OK);
+        } else {
+            return ResponseUtil.noData(HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

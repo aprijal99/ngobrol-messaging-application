@@ -12,5 +12,5 @@ public interface UserGroupService {
     List<UserGroup> findUserGroupsByGroup(GroupChat groupChat);
     List<GroupChat> extractGroups(List<UserGroup> userGroups);
     UserGroup dtoToEntity(User user, GroupChat groupChat);
-    void deleteUserGroup(User user, GroupChat groupChat);
+    Integer deleteUserGroup(User user, GroupChat groupChat);
 }

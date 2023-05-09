@@ -49,7 +49,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public void deleteUserGroup(User user, GroupChat groupChat) {
-        userGroupRepository.deleteUserGroupByUserAndGroupChat(user, groupChat);
+    public Integer deleteUserGroup(User user, GroupChat groupChat) {
+        return userGroupRepository.deleteUserGroupByUserAndGroupChat(user, groupChat);
     }
 }

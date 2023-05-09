@@ -1,16 +1,62 @@
-import {Avatar, Box, Button, IconButton, TextField, Typography} from '@mui/material';
+import {
+  Alert,
+  AlertColor,
+  Avatar,
+  Box,
+  Button,
+  Dialog, DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton, Slide, SlideProps, Snackbar,
+  TextField,
+  Typography
+} from '@mui/material';
 import {AddAPhotoOutlined, Close, Delete, DeleteOutlined, PersonAddOutlined, SendOutlined} from '@mui/icons-material';
 import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
 import {GroupType} from '../../../redux/slice/groupSlice';
 import ImageCropper from '../dialog/ImageCropper';
+import {UserType} from '../../../redux/slice/userSlice';
+import {TransitionProps} from '@mui/material/transitions';
+import {ApiType} from '../../../types/api';
 
-// const ConfirmationDialog = () => {
-//   return (
-//
-//   );
-// }
+const TransitionUp = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) { return <Slide direction='up' ref={ref} {...props} />; });
+
+type CustomTransitionProps = Omit<SlideProps, 'direction'>;
+function TransitionRight(props: CustomTransitionProps) {
+  return <Slide {...props} direction='right' />
+}
+
+const ConfirmationDialog = ({ openDialog, member, closeDialog, deleteMember }: { openDialog: boolean, member: UserType, closeDialog: () => void, deleteMember: (userEmail: string) => void }) => {
+  return (
+    <Dialog open={openDialog} onClose={closeDialog} TransitionComponent={TransitionUp} sx={{ '.MuiPaper-root': { m: 2.5, backgroundColor: '#252525', backgroundImage: 'none', }, }}>
+      <DialogTitle sx={{ lineHeight: '1.5rem', }}>Delete this member from group?</DialogTitle>
+      <DialogContent sx={{ pb: '16px', }}>
+        <Box alignItems='center' sx={{ display: 'flex', }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
+            <Avatar alt='Contact Profile Image' src={member.imageUrl ? `http://localhost:7080/image/${member.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
+          </Box>
+          <Box flexGrow='1'>
+            <Typography>{member.name}</Typography>
+            <Typography sx={{ fontSize: '.85rem', color: 'rgba(255, 255, 255, 0.6)', }}>{member.status}</Typography>
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions sx={{ pt: 0, }}>
+        <Button size='small' onClick={() => closeDialog()} sx={{ textTransform: 'none', ':hover': { backgroundColor: 'initial', }, }}>Cancel</Button>
+        <Button
+          size='small' color='error'
+          onClick={() => { closeDialog(); deleteMember(member.email); }} sx={{ textTransform: 'none', ml: '0px !important', ':hover': { backgroundColor: 'initial', }, }}>Delete</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
 const EditProfileDetail = () => {
   const { activeChat } = useSelector((state: RootState) => state.activeChat, (oldVal, newVal) => {
@@ -25,6 +71,9 @@ const EditProfileDetail = () => {
   const [tempImg, setTempImg] = useState<File | null>(null);
   const [cropper, setCropper] = useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
+  const [deletedMember, setDeletedMember] = useState<UserType | null>(null);
+  const [alert, setAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<{ severity: AlertColor, message: string, }>({ severity: 'success', message: 'Successfully update group data' });
 
   let groupById: GroupType = group.filter(g => g.groupId === Number(activeChat.groupId))[0];
 
@@ -52,8 +101,25 @@ const EditProfileDetail = () => {
     });
   }
 
-  const handleClickDeleteMember = (contactEmail: string) => {
-
+  const deleteMember = (userEmail: string) => {
+    fetch(`http://localhost:7080/group/delete-user`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', },
+      body: JSON.stringify({
+        userEmail,
+        groupChatId: groupById.groupId,
+      }),
+    })
+      .then(fetchResult => fetchResult.json())
+      .then((result: ApiType) => {
+        if(result.code !== 200) {
+          setAlertMessage({ severity: 'error', message: 'Failed delete the member' });
+          setAlert(true);
+        } else {
+          setAlertMessage({ severity: 'success', message: 'Successfully delete the member' });
+          setAlert(true);
+        }
+      });
   }
 
   return (
@@ -66,6 +132,15 @@ const EditProfileDetail = () => {
       }}
     >
       {(cropper && tempImg) && <ImageCropper image={tempImg} saveCropImg={(cropImg) => setNewGroupImg(cropImg)} closeCropper={() => setCropper(prevState => !prevState)} />}
+
+      {deletedMember && <ConfirmationDialog openDialog={confirmDialog} closeDialog={() => setConfirmDialog(false)} member={deletedMember} deleteMember={(userEmail) => deleteMember(userEmail)} />}
+
+      <Snackbar
+        open={alert} anchorOrigin={{ vertical: 'top', horizontal: 'left', }} onClose={() => setAlert(false)} TransitionComponent={TransitionRight} autoHideDuration={5000}
+        sx={{ top: '24px', left: '24px', right: '24px', '@media (min-width: 600px)': { top: '24px', left: '24px', right: '24px', }, '@media (min-width: 620px)': { top: '24px', left: '24px', right: 'auto', }, }}
+      >
+        <Alert severity={alertMessage.severity} sx={{ width: '100%', }}>{alertMessage.message}</Alert>
+      </Snackbar>
 
       {(activeChat.chatMode === 'group' && groupById) && <>
         <Box display='flex' alignItems='center' sx={{ p: '10px', pb: 3, }}>
@@ -109,7 +184,10 @@ const EditProfileDetail = () => {
                 <Typography>{user.name}</Typography>
                 <Typography sx={{ fontSize: '.85rem', color: 'rgba(255, 255, 255, 0.6)', }}>{user.status}</Typography>
               </Box>
-              <IconButton onClick={() => handleClickDeleteMember(user.email)}>
+              <IconButton onClick={() => {
+                setConfirmDialog(true);
+                setDeletedMember(user);
+              }}>
                 <Delete color='error' />
               </IconButton>
             </Box>)}

@@ -20,7 +20,7 @@ import uploadImage from '../../../functions/uploadImage';
 import {updateUserData} from '../../../redux/slice/userSlice';
 
 type TransitionProps = Omit<SlideProps, 'direction'>;
-function transitionDown(props: TransitionProps) {
+function TransitionRight(props: TransitionProps) {
   return <Slide {...props} direction='right' />
 }
 
@@ -137,12 +137,8 @@ const EditUserDetail = () => {
       </Backdrop>
 
       <Snackbar
-        open={alert} anchorOrigin={{ vertical: 'top', horizontal: 'left', }} onClose={() => setAlert(false)} TransitionComponent={transitionDown} autoHideDuration={5000}
-        sx={{
-          top: '24px', left: '24px', right: '24px',
-          '@media (min-width: 600px)': { top: '24px', left: '24px', right: '24px', },
-          '@media (min-width: 620px)': { top: '24px', left: '24px', right: 'auto', }
-        }}
+        open={alert} anchorOrigin={{ vertical: 'top', horizontal: 'left', }} onClose={() => setAlert(false)} TransitionComponent={TransitionRight} autoHideDuration={5000}
+        sx={{ top: '24px', left: '24px', right: '24px', '@media (min-width: 600px)': { top: '24px', left: '24px', right: '24px', }, '@media (min-width: 620px)': { top: '24px', left: '24px', right: 'auto', }, }}
       >
         <Alert severity={alertMessage.severity} sx={{ width: '100%', }}>{alertMessage.message}</Alert>
       </Snackbar>
