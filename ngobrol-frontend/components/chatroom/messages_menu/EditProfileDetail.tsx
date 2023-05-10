@@ -33,6 +33,12 @@ function TransitionRight(props: CustomTransitionProps) {
   return <Slide {...props} direction='right' />
 }
 
+const compareFn = (a: UserType, b: UserType) => {
+  if(a.name < b.name) return -1;
+  if(a.name > b.name) return 1;
+  return 0;
+}
+
 const ConfirmationDialog = ({ openDialog, member, closeDialog, deleteMember }: { openDialog: boolean, member: UserType, closeDialog: () => void, deleteMember: (userEmail: string) => void }) => {
   return (
     <Dialog open={openDialog} onClose={closeDialog} TransitionComponent={TransitionUp} sx={{ '.MuiPaper-root': { m: 2.5, backgroundColor: '#252525', backgroundImage: 'none', }, }}>
@@ -61,8 +67,7 @@ const ConfirmationDialog = ({ openDialog, member, closeDialog, deleteMember }: {
   );
 }
 
-const AddMembersDialog = ({ openDialog, groupMembers, closeDialog }: { openDialog: boolean, groupMembers: UserType[], closeDialog: () => void, }) => {
-  const { user: { email: thisUserEmail } } = useSelector((state: RootState) => state.user);
+const AddMembersDialog = ({ openDialog, groupMembers, closeDialog, addMembers }: { openDialog: boolean, groupMembers: UserType[], closeDialog: () => void, addMembers: (selectedUsers: { userEmail: string }[]) => void }) => {
   const { contact } = useSelector((state: RootState) => state.contact);
   const displayedContact = contact.filter(c => !groupMembers.some(m => m.email === c.email));
   const [checked, setChecked] = useState<{ [n: string]: boolean }>({});
@@ -73,12 +78,22 @@ const AddMembersDialog = ({ openDialog, groupMembers, closeDialog }: { openDialo
     setChecked(initialChecked);
   }, []);
 
+  const handleClickAddButton = () => {
+    const selectedUsers: { userEmail: string }[] = [];
+    Object.keys(checked).map(key => checked[key] && selectedUsers.push({ userEmail: key }));
+
+    if(selectedUsers.length !== 0) {
+      addMembers(selectedUsers);
+      closeDialog();
+    }
+  }
+
   return (
     <Dialog
       fullWidth maxWidth='xs' open={openDialog} onClose={closeDialog} TransitionComponent={TransitionUp}
       sx={{ '.MuiPaper-root': { width: 'calc(100% - 40px)', maxWidth: '350px',m: 2.5, backgroundColor: '#252525', backgroundImage: 'none', }, }}
     >
-      <DialogTitle sx={{ lineHeight: '1.5rem', }}>{displayedContact.length !== 0 ? 'Choose from contact' : 'There is no any contact'}</DialogTitle>
+      <DialogTitle sx={{ lineHeight: '1.5rem', }}>{displayedContact.length !== 0 ? 'Choose from contact' : 'All contacts already has been in the group'}</DialogTitle>
       <DialogContent sx={{ scrollbarWidth: 'thin', pb: 0, }}>
         <Table>
           <TableBody>
@@ -116,7 +131,7 @@ const AddMembersDialog = ({ openDialog, groupMembers, closeDialog }: { openDialo
       </DialogContent>
       <DialogActions>
         <Button size='small' onClick={() => closeDialog()} sx={{ textTransform: 'none', ':hover': { backgroundColor: 'initial', }, }}>Cancel</Button>
-        {displayedContact.length !== 0 && <Button size='small' onClick={() => { closeDialog(); }} sx={{ textTransform: 'none', ml: '0px !important', ':hover': { backgroundColor: 'initial', }, }}>Add</Button>}
+        {displayedContact.length !== 0 && <Button size='small' onClick={handleClickAddButton} sx={{ textTransform: 'none', ml: '0px !important', ':hover': { backgroundColor: 'initial', }, }}>Add</Button>}
       </DialogActions>
     </Dialog>
   );
@@ -129,6 +144,7 @@ const EditProfileDetail = () => {
     return !(oldVal.activeChat.chatMode === 'group' && newVal.activeChat.chatMode === 'group');
   });
   const { group } = useSelector((state: RootState) => state.group);
+  const { contact } = useSelector((state: RootState) => state.contact);
   const { user: { email: thisUserEmail } } = useSelector((state: RootState) => state.user);
   const [newGroupImg, setNewGroupImg] = useState<File | null>(null);
   const [newGroupName, setNewGroupName] = useState<string>('');
@@ -150,7 +166,7 @@ const EditProfileDetail = () => {
 
     const thisUser = groupById.users.filter(u => u.email === thisUserEmail);
     const tempUsers = groupById.users.filter(u => u.email !== thisUserEmail);
-    setGroupMembers([...thisUser, ...tempUsers]);
+    setGroupMembers([...thisUser, ...tempUsers.sort(compareFn)]);
   }, [groupById]);
 
 
@@ -165,6 +181,28 @@ const EditProfileDetail = () => {
       name: newGroupName,
       description: newGroupDesc,
     });
+  }
+
+  const addMembers = (selectedUsers: { userEmail: string }[]) => {
+    fetch(`http://localhost:7080/group/assign-user/batch/${groupById.groupId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', },
+      body: JSON.stringify(selectedUsers),
+    })
+      .then(fetchResult => fetchResult.json())
+      .then((result: ApiType) => {
+        if(result.code !== 201) {
+          setAlertMessage({ severity: 'error', message: 'Something went wrong' });
+          setAlert(true);
+        } else {
+          setAlertMessage({ severity: 'success', message: 'Successfully added members' });
+          setAlert(true);
+
+          const newMembers = contact.filter(c => selectedUsers.some(s => s.userEmail === c.email));
+          const newGroupMembers = [...groupMembers, ...newMembers];
+          dispatch(changeGroupUsers({ groupId: groupById.groupId, users: newGroupMembers }));
+        }
+      });
   }
 
   const deleteMember = (userEmail: string) => {
@@ -202,7 +240,7 @@ const EditProfileDetail = () => {
       {(cropper && tempImg) && <ImageCropper image={tempImg} saveCropImg={(cropImg) => setNewGroupImg(cropImg)} closeCropper={() => setCropper(prevState => !prevState)} />}
 
       {deletedMember && <ConfirmationDialog openDialog={confirmDialog} closeDialog={() => setConfirmDialog(false)} member={deletedMember} deleteMember={(userEmail) => deleteMember(userEmail)} />}
-      <AddMembersDialog openDialog={addMembersDialog} groupMembers={groupMembers} closeDialog={() => setAddMembersDialog(false)} />
+      <AddMembersDialog openDialog={addMembersDialog} groupMembers={groupMembers} closeDialog={() => setAddMembersDialog(false)} addMembers={(selectedUsers) => addMembers(selectedUsers)} />
 
       <Snackbar
         open={alert} anchorOrigin={{ vertical: 'top', horizontal: 'left', }} onClose={() => setAlert(false)} TransitionComponent={TransitionRight} autoHideDuration={5000}

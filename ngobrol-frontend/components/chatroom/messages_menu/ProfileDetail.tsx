@@ -4,6 +4,13 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
 import React, {useState} from 'react';
 import EditProfileDetail from './EditProfileDetail';
+import {UserType} from '../../../redux/slice/userSlice';
+
+const compareFn = (a: UserType, b: UserType) => {
+  if(a.name < b.name) return -1;
+  if(a.name > b.name) return 1;
+  return 0;
+}
 
 const ContactProfileDetail = () => {
   const { contact } = useSelector((state: RootState) => state.contact);
@@ -49,7 +56,7 @@ const GroupProfileDetail = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const { activeChat: { groupId } } = useSelector((state: RootState) => state.activeChat);
   const groupById = group.filter(g => g.groupId === Number(groupId))[0];
-  const orderedUsers = [...groupById.users.filter(u => u.email === user.email), ...groupById.users.filter(u => u.email !== user.email)];
+  const orderedUsers = [...groupById.users.filter(u => u.email === user.email), ...groupById.users.filter(u => u.email !== user.email).sort(compareFn)];
 
   const [tab, setTab] = useState('members');
   const handleChange = (event: React.SyntheticEvent, newValue: string) => setTab(newValue);

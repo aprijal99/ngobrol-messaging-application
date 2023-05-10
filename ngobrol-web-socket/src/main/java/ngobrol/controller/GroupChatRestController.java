@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -103,6 +104,20 @@ public class GroupChatRestController {
 
         UserGroup userGroup = userGroupService.dtoToEntity(user, groupChat);
         userGroupService.saveUserGroup(userGroup);
+
+        return ResponseUtil.noData(HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "/assign-user/batch/{group_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> assignUserToGroupBatch(@PathVariable(name = "group_id") Integer groupId, @RequestBody List<Map<String, String>> users) {
+        GroupChat groupChatById = groupChatService.findGroupChatById(groupId);
+
+        users.forEach(user -> {
+            User userByEmail = userService.findUserByEmail(user.get("userEmail"));
+            UserGroup userGroup = userGroupService.dtoToEntity(userByEmail, groupChatById);
+
+            userGroupService.saveUserGroup(userGroup);
+        });
 
         return ResponseUtil.noData(HttpStatus.CREATED);
     }
