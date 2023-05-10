@@ -113,12 +113,6 @@ public class GroupChatRestController {
         GroupChat groupChat = groupChatService.findGroupChatById(userGroupDto.getGroupChatId());
 
         Integer n = userGroupService.deleteUserGroup(user, groupChat);
-
-        System.out.println(userGroupDto);
-        System.out.println(user);
-        System.out.println(groupChat);
-        System.out.println(n);
-
         if(n == 1) {
             return ResponseUtil.noData(HttpStatus.OK);
         } else {

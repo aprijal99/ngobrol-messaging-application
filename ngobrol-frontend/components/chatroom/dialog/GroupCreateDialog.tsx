@@ -101,10 +101,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog }: { handleClickCloseDialog:
   return (
     <Box
       id='new-group-create'
-      sx={{
-        px: 3, py: 4, position: 'absolute', left: '100%', minWidth: '100%', overflow: 'hidden',
-        transition: 'left 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
-      }}
+      sx={{ px: 3, py: 4, position: 'absolute', left: '100%', minWidth: '100%', overflow: 'hidden', transition: 'left 225ms cubic-bezier(0, 0, 0.2, 1) 0ms', }}
     >
       <IconButton onClick={handleClickNewGroupCreateBack} sx={{ position: 'absolute', top: '12px', left: '10px', zIndex: '100', }}>
         <ArrowBackIosNew sx={{ fontSize: '1.2rem', color: 'rgba(255, 255, 255, 0.6)', }} />
@@ -184,7 +181,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog }: { handleClickCloseDialog:
                     <CustomTableCell>
                       <Box sx={{ display: 'flex', p: .5, }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
-                          <Avatar alt='Contact Profile Image' src='https://i.pravatar.cc/150?u=a042581f4e29026024d' />
+                          <Avatar alt='Contact Profile Image' src={c.imageUrl ? `http://localhost:7080/image/${c.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
                         </Box>
                         <Box>
                           <Typography>{c.name}</Typography>

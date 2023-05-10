@@ -29,9 +29,16 @@ const groupSlice = createSlice({
     addGroup: (state, action: PayloadAction<GroupType>) => {
       state.group = [...state.group, action.payload];
     },
+    changeGroupUsers: (state, action: PayloadAction<{ groupId: number, users: UserType[], }>) => {
+      const groupById = state.group.filter(g => g.groupId === action.payload.groupId)[0];
+      if(groupById) {
+        groupById.users = action.payload.users;
+        groupById.userNumber = action.payload.users.length;
+      }
+    },
   },
 });
 
-export const { setInitialGroup, addGroup } = groupSlice.actions;
+export const { setInitialGroup, addGroup, changeGroupUsers } = groupSlice.actions;
 
 export default groupSlice.reducer;

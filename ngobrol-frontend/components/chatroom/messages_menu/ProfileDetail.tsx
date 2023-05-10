@@ -46,8 +46,10 @@ const ContactProfileDetail = () => {
 
 const GroupProfileDetail = () => {
   const { group } = useSelector((state: RootState) => state.group);
+  const { user } = useSelector((state: RootState) => state.user);
   const { activeChat: { groupId } } = useSelector((state: RootState) => state.activeChat);
   const groupById = group.filter(g => g.groupId === Number(groupId))[0];
+  const orderedUsers = [...groupById.users.filter(u => u.email === user.email), ...groupById.users.filter(u => u.email !== user.email)];
 
   const [tab, setTab] = useState('members');
   const handleChange = (event: React.SyntheticEvent, newValue: string) => setTab(newValue);
@@ -92,7 +94,7 @@ const GroupProfileDetail = () => {
         </Tabs>
       </Box>
       <Divider sx={{ mt: '-9px', mb: '9px', }} />
-      {groupById.users.map((user, idx) => <Box key={idx} sx={{ display: 'flex', p: 1, mx: 1.5, cursor: 'pointer', borderRadius: '10px', ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)', }, }}>
+      {orderedUsers.map((user, idx) => <Box key={idx} sx={{ display: 'flex', p: 1, mx: 1.5, cursor: 'pointer', borderRadius: '10px', ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)', }, }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
           <Avatar alt='Contact Profile Image' src={user.imageUrl ? `http://localhost:7080/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
         </Box>
