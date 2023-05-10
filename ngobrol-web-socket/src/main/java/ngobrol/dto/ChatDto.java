@@ -10,11 +10,12 @@ public class ChatDto {
     public ChatDto() {
     }
 
-    public ChatDto(String message, String fileUrl, Long createdAt, String contactOrGroupName) {
+    public ChatDto(String message, String fileUrl, Long createdAt, String contactOrGroupName, String imageUrl) {
         this.message = message;
         this.fileUrl = fileUrl;
         this.createdAt = createdAt;
         this.contactOrGroupName = contactOrGroupName;
+        this.imageUrl = imageUrl;
     }
 
     public String getMessage() {

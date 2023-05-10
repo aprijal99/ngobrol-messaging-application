@@ -30,11 +30,10 @@ const ChatListIteration = () => {
 }
 
 const NewChatButton = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (e: React.MouseEvent<HTMLElement>) => setAnchorEl(e.currentTarget);
-
-  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <>

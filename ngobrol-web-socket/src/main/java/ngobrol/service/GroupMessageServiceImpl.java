@@ -69,13 +69,15 @@ public class GroupMessageServiceImpl implements GroupMessageService {
 
     @Override
     public ChatDto entityToChat(GroupMessage groupMessage) {
-        return new ChatDto(groupMessage.getMessage(), groupMessage.getFileUrl(), groupMessage.getCreatedAt().getTime(), groupMessage.getGroupChat().getName());
+        return new ChatDto(groupMessage.getMessage(), groupMessage.getFileUrl(), groupMessage.getCreatedAt().getTime(), groupMessage.getGroupChat().getName(), groupMessage.getGroupChat().getImageUrl());
     }
 
     @Override
     public Map<Integer, ChatDto> groupMessagesToChat(List<GroupMessage> groupMessages) {
         Map<Integer, ChatDto> chat = new HashMap<>();
-        groupMessages.forEach(groupMessage -> chat.put(groupMessage.getGroupChat().getGroupId(), this.entityToChat(groupMessage)));
+        groupMessages.forEach(groupMessage -> {
+            chat.put(groupMessage.getGroupChat().getGroupId(), this.entityToChat(groupMessage));
+        });
 
         return chat;
     }

@@ -78,8 +78,6 @@ const EditUserDetail = () => {
       .then((result: ApiType) => {
         if(result.code !== 200) {
           setAlertMessage({ severity: 'error', message: 'Something went wrong when trying to update user data, try again later' });
-          setAlert(true);
-          return;
         } else dispatch(updateUserData({
           name: currentUserDetail['name'],
           email: currentUserDetail['email'],

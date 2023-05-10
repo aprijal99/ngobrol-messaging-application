@@ -37,6 +37,16 @@ public class GroupChatServiceImpl implements GroupChatService {
     }
 
     @Override
+    public void updateGroupChat(Integer groupId, GroupChatDto groupChatDto) {
+        GroupChat groupChat = this.findGroupChatById(groupId);
+        groupChat.setName(groupChatDto.getName());
+        groupChat.setDescription(groupChatDto.getDescription());
+        if (groupChatDto.getImageUrl() != null) groupChat.setImageUrl(groupChatDto.getImageUrl());
+
+        groupChatRepository.save(groupChat);
+    }
+
+    @Override
     public GroupChat dtoToEntity(GroupChatDto groupChatDto) {
         return new GroupChat(groupChatDto.getName(), groupChatDto.getDescription(), groupChatDto.getImageUrl(), new Timestamp(groupChatDto.getCreatedAt()));
     }

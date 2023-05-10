@@ -64,7 +64,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public ChatDto entityToChat(Message message) {
-        return new ChatDto(message.getMessage(), message.getFileUrl(), message.getCreatedAt().getTime(), null);
+        return new ChatDto(message.getMessage(), message.getFileUrl(), message.getCreatedAt().getTime(), null, null);
     }
 
     @Override

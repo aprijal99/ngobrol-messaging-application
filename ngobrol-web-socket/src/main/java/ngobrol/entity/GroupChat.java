@@ -51,7 +51,7 @@ public class GroupChat {
         return description;
     }
 
-    public void setDescription(String about) {
+    public void setDescription(String description) {
         this.description = description;
     }
 

@@ -15,11 +15,13 @@ import {AddAPhotoOutlined, Close, Delete, DeleteOutlined, PersonAddOutlined, Sen
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux/store/store';
-import {changeGroupUsers, GroupType} from '../../../redux/slice/groupSlice';
+import {changeGroupUsers, GroupType, updateGroup} from '../../../redux/slice/groupSlice';
 import ImageCropper from '../dialog/ImageCropper';
 import {UserType} from '../../../redux/slice/userSlice';
 import {TransitionProps} from '@mui/material/transitions';
 import {ApiType} from '../../../types/api';
+import uploadImage from '../../../functions/uploadImage';
+import {updateImageUrl} from '../../../redux/slice/chatSlice';
 
 const TransitionUp = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -175,12 +177,45 @@ const EditProfileDetail = () => {
     if(editProfileDetail) editProfileDetail.classList.add("translate-x-minus-100-percent");
   }
 
-  const handleClickSaveGroupDetailChanges = () => {
-    console.log({
-      groupId: groupById.groupId,
+  const handleClickSaveGroupDetailChanges = async () => {
+    const newGroupDetail: { [n: string]: string } = {
       name: newGroupName,
       description: newGroupDesc,
-    });
+    }
+
+    if(newGroupImg) {
+      const result = await uploadImage(newGroupImg);
+      if(result instanceof Error) {
+        setAlertMessage({ severity: 'error', message: 'Something went wrong when trying to upload image, try again later' });
+        setAlert(true);
+        return;
+      }
+
+      newGroupDetail['imageUrl'] = result;
+    }
+
+    fetch(`http://localhost:7080/group/${groupById.groupId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', },
+      body: JSON.stringify(newGroupDetail),
+    })
+      .then(fetchResult => fetchResult.json())
+      .then((result: ApiType) => {
+        if(result.code !== 200) {
+          setAlertMessage({ severity: 'error', message: 'Something went wrong when trying to update user data, try again later' });
+        } else {
+          dispatch(updateGroup({
+            groupId: groupById.groupId,
+            name: newGroupDetail['name'],
+            description: newGroupDetail['description'],
+            imageUrl: newGroupDetail['imageUrl'] ? newGroupDetail['imageUrl'] : null,
+          }));
+          if(newGroupDetail['imageUrl']) dispatch(updateImageUrl({ groupId: groupById.groupId, imageUrl: newGroupDetail['imageUrl'] }))
+        }
+      });
+
+    setNewGroupImg(null);
+    setAlert(true);
   }
 
   const addMembers = (selectedUsers: { userEmail: string }[]) => {

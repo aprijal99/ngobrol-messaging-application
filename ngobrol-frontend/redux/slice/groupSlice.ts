@@ -29,6 +29,14 @@ const groupSlice = createSlice({
     addGroup: (state, action: PayloadAction<GroupType>) => {
       state.group = [...state.group, action.payload];
     },
+    updateGroup: (state, action: PayloadAction<{ groupId: number, name: string, description: string, imageUrl: string | null, }>) => {
+      const groupById = state.group.filter(g => g.groupId === action.payload.groupId)[0];
+      if(groupById) {
+        groupById.name = action.payload.name;
+        groupById.description = action.payload.description;
+        if(action.payload.imageUrl) groupById.imageUrl = action.payload.imageUrl;
+      }
+    },
     changeGroupUsers: (state, action: PayloadAction<{ groupId: number, users: UserType[], }>) => {
       const groupById = state.group.filter(g => g.groupId === action.payload.groupId)[0];
       if(groupById) {
@@ -39,6 +47,6 @@ const groupSlice = createSlice({
   },
 });
 
-export const { setInitialGroup, addGroup, changeGroupUsers } = groupSlice.actions;
+export const { setInitialGroup, addGroup, updateGroup, changeGroupUsers } = groupSlice.actions;
 
 export default groupSlice.reducer;

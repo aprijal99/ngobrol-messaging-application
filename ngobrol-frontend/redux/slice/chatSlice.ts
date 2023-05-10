@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export type ChatType = {
   [n: string | number] : {
@@ -53,9 +53,13 @@ const chatSlice = createSlice({
         state.chat[action.payload.groupId] = chatByGroupId;
       }
     },
+    updateImageUrl: (state, action: PayloadAction<{ groupId: number, imageUrl: string, }>) => {
+      let chatByGroupId = state.chat[action.payload.groupId];
+      if(chatByGroupId) chatByGroupId.imageUrl = action.payload.imageUrl;
+    },
   },
 });
 
-export const { setInitialChat, changeOneCurrentPrivateChat, changeOneCurrentGroupChat } = chatSlice.actions;
+export const { setInitialChat, changeOneCurrentPrivateChat, changeOneCurrentGroupChat, updateImageUrl } = chatSlice.actions;
 
 export default chatSlice.reducer;

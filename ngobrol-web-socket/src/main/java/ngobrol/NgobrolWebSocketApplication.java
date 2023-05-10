@@ -55,8 +55,8 @@ public class NgobrolWebSocketApplication {
 			messageService.saveMessage(new Message(null, "I'm cold bro since this morning, I need a bed rest", null, new Timestamp(System.currentTimeMillis() + (r.nextInt(1000 - 100) + 100)), deki, ghiyas));
 			messageService.saveMessage(new Message(null, "Good, I heard Deki was sick this morning", null, new Timestamp(System.currentTimeMillis() + (r.nextInt(1000 - 100) + 100)), ghiyas, ainun));
 
-			GroupChat biochemistry = new GroupChat("Biochemistry 5", "Group 5 in Biochemistry class", null, new Timestamp(System.currentTimeMillis()));
-			GroupChat boys = new GroupChat("Boys", "Group of boys of Biochemistry 2018", null, new Timestamp(System.currentTimeMillis()));
+			GroupChat biochemistry = new GroupChat("Biochemistry 5", "Group 5 in Biochemistry class", "c02363ea-8de2-43ee-b5a4-8a4923b753b4.jpg", new Timestamp(System.currentTimeMillis()));
+			GroupChat boys = new GroupChat("Boys", "Group of boys of Biochemistry 2018", "0646cb23-ad61-4256-9ca3-36faba3fbefb.jpg", new Timestamp(System.currentTimeMillis()));
 
 			groupChatService.saveGroupChat(biochemistry);
 			groupChatService.saveGroupChat(boys);

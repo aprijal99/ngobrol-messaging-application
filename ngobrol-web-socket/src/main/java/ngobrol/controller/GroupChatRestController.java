@@ -122,6 +122,13 @@ public class GroupChatRestController {
         return ResponseUtil.noData(HttpStatus.CREATED);
     }
 
+    @PutMapping(path = "/{group_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateGroup(@PathVariable(name = "group_id") Integer groupId, @RequestBody GroupChatDto groupChatDto) {
+        groupChatService.updateGroupChat(groupId, groupChatDto);
+
+        return ResponseUtil.noData(HttpStatus.OK);
+    }
+
     @DeleteMapping(path = "/delete-user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteUserFromGroup(@RequestBody UserGroupDto userGroupDto) {
         User user = userService.findUserByEmail(userGroupDto.getUserEmail());
