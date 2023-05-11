@@ -12,4 +12,5 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, Integer> {
     Optional<List<UserGroup>> findUserGroupsByUser(User user);
     Optional<List<UserGroup>> findUserGroupsByGroupChat(GroupChat groupChat);
     Integer deleteUserGroupByUserAndGroupChat(User user, GroupChat groupChat);
+    void deleteUserGroupsByGroupChat(GroupChat groupChat);
 }

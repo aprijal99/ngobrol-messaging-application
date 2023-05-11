@@ -52,4 +52,9 @@ public class UserGroupServiceImpl implements UserGroupService {
     public Integer deleteUserGroup(User user, GroupChat groupChat) {
         return userGroupRepository.deleteUserGroupByUserAndGroupChat(user, groupChat);
     }
+
+    @Override
+    public void deleteUserGroupsByGroupChat(GroupChat groupChat) {
+        userGroupRepository.deleteUserGroupsByGroupChat(groupChat);
+    }
 }

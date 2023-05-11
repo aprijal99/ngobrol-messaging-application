@@ -67,4 +67,9 @@ public class GroupChatServiceImpl implements GroupChatService {
                 .map(this::entityToDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteGroupChat(GroupChat groupChat) {
+        groupChatRepository.delete(groupChat);
+    }
 }

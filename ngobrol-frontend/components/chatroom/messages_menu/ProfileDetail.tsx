@@ -57,7 +57,6 @@ const GroupProfileDetail = () => {
   const { activeChat: { groupId } } = useSelector((state: RootState) => state.activeChat);
   const groupById = group.filter(g => g.groupId === Number(groupId))[0];
   const orderedUsers = [...groupById.users.filter(u => u.email === user.email), ...groupById.users.filter(u => u.email !== user.email).sort(compareFn)];
-
   const [tab, setTab] = useState('members');
   const handleChange = (event: React.SyntheticEvent, newValue: string) => setTab(newValue);
 

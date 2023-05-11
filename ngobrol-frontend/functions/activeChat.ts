@@ -11,3 +11,9 @@ export const changeToGroupChat = (groupId: number): ActiveChatType => ({
   contactEmail: '',
   groupId,
 });
+
+export const resetActiveChat = (): ActiveChatType => ({
+  chatMode: '',
+  contactEmail: '',
+  groupId: 0,
+});

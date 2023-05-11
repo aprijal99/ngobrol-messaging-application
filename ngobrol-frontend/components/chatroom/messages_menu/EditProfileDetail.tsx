@@ -13,15 +13,17 @@ import {
 } from '@mui/material';
 import {AddAPhotoOutlined, Close, Delete, DeleteOutlined, PersonAddOutlined, SendOutlined} from '@mui/icons-material';
 import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector, useStore} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux/store/store';
-import {changeGroupUsers, GroupType, updateGroup} from '../../../redux/slice/groupSlice';
+import {changeGroupUsers, deleteGroup, GroupType, updateGroup} from '../../../redux/slice/groupSlice';
 import ImageCropper from '../dialog/ImageCropper';
 import {UserType} from '../../../redux/slice/userSlice';
 import {TransitionProps} from '@mui/material/transitions';
 import {ApiType} from '../../../types/api';
 import uploadImage from '../../../functions/uploadImage';
-import {updateImageUrl} from '../../../redux/slice/chatSlice';
+import {deleteChat, updateImageUrl} from '../../../redux/slice/chatSlice';
+import {changeActiveChat} from '../../../redux/slice/activeChatSlice';
+import {resetActiveChat} from '../../../functions/activeChat';
 
 const TransitionUp = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -93,7 +95,7 @@ const AddMembersDialog = ({ openDialog, groupMembers, closeDialog, addMembers }:
   return (
     <Dialog
       fullWidth maxWidth='xs' open={openDialog} onClose={closeDialog} TransitionComponent={TransitionUp}
-      sx={{ '.MuiPaper-root': { width: 'calc(100% - 40px)', maxWidth: '350px',m: 2.5, backgroundColor: '#252525', backgroundImage: 'none', }, }}
+      sx={{ '.MuiPaper-root': { width: 'calc(100% - 40px)', maxWidth: '350px', m: 2.5, backgroundColor: '#252525', backgroundImage: 'none', }, }}
     >
       <DialogTitle sx={{ lineHeight: '1.5rem', }}>{displayedContact.length !== 0 ? 'Choose from contact' : 'All contacts already has been in the group'}</DialogTitle>
       <DialogContent sx={{ scrollbarWidth: 'thin', pb: 0, }}>
@@ -139,6 +141,46 @@ const AddMembersDialog = ({ openDialog, groupMembers, closeDialog, addMembers }:
   );
 }
 
+const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { currentGroup: GroupType, openDialog: boolean, closeDialog: () => void, }) => {
+  const store = useStore<RootState>();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const leaveGroup = () => {
+    const messageMenu = document.getElementById('message-menu');
+    if(messageMenu) messageMenu.style.marginRight = '0px';
+
+    fetch(`http://localhost:7080/group/delete-user`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', },
+      body: JSON.stringify({
+        userEmail: store.getState().user.user.email,
+        groupChatId: currentGroup.groupId,
+      }),
+    })
+      .then(fetchResult => fetchResult.json())
+      .then((result: ApiType) => {
+        if(result.code !== 200) return;
+      });
+
+    dispatch(changeActiveChat(resetActiveChat()));
+    dispatch(deleteGroup({ groupId: currentGroup.groupId }));
+    dispatch(deleteChat({ groupId: currentGroup.groupId }));
+  }
+
+  return (
+    <Dialog
+      open={openDialog} onClose={closeDialog} TransitionComponent={TransitionUp}
+      sx={{ '.MuiPaper-root': { m: 2.5, backgroundColor: '#252525', backgroundImage: 'none', }, }}
+    >
+      <DialogTitle sx={{ lineHeight: '1.5rem', }}>Delete or leave the group?</DialogTitle>
+      <DialogActions>
+        <Button color='error' onClick={() => closeDialog()} sx={{ textTransform: 'none', ':hover': { backgroundColor: 'initial', }, }}>Delete Group</Button>
+        <Button color='error' onClick={() => { closeDialog(); leaveGroup(); }} sx={{ textTransform: 'none', ':hover': { backgroundColor: 'initial', }, }}>Leave Group</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 const EditProfileDetail = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { activeChat } = useSelector((state: RootState) => state.activeChat, (oldVal, newVal) => {
@@ -156,6 +198,7 @@ const EditProfileDetail = () => {
   const [cropper, setCropper] = useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
   const [addMembersDialog, setAddMembersDialog] = useState<boolean>(false);
+  const [deleteGroupDialog, setDeleteGroupDialog] = useState<boolean>(false);
   const [deletedMember, setDeletedMember] = useState<UserType | null>(null);
   const [alert, setAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<{ severity: AlertColor, message: string, }>({ severity: 'success', message: 'Successfully update group data' });
@@ -276,6 +319,7 @@ const EditProfileDetail = () => {
 
       {deletedMember && <ConfirmationDialog openDialog={confirmDialog} closeDialog={() => setConfirmDialog(false)} member={deletedMember} deleteMember={(userEmail) => deleteMember(userEmail)} />}
       <AddMembersDialog openDialog={addMembersDialog} groupMembers={groupMembers} closeDialog={() => setAddMembersDialog(false)} addMembers={(selectedUsers) => addMembers(selectedUsers)} />
+      <DeleteOrLeaveGroupDialog currentGroup={groupById} openDialog={deleteGroupDialog} closeDialog={() => setDeleteGroupDialog(false)} />
 
       <Snackbar
         open={alert} anchorOrigin={{ vertical: 'top', horizontal: 'left', }} onClose={() => setAlert(false)} TransitionComponent={TransitionRight} autoHideDuration={5000}
@@ -342,14 +386,14 @@ const EditProfileDetail = () => {
               Add Members
             </Button>
             <Button
-              fullWidth variant='outlined' onClick={handleClickSaveGroupDetailChanges} startIcon={<SendOutlined />}
+              fullWidth variant='outlined' startIcon={<SendOutlined />} onClick={handleClickSaveGroupDetailChanges}
               sx={{ textAlign: 'left', justifyContent: 'start', textTransform: 'none', borderRadius: '10px', ':hover': { backgroundColor: 'initial', }, }}
             >
               Save Changes
             </Button>
           </Box>
           <Button
-            variant='outlined' color='error' startIcon={<DeleteOutlined />}
+            variant='outlined' color='error' startIcon={<DeleteOutlined />} onClick={() => setDeleteGroupDialog(true)}
             sx={{ justifyContent: 'start', textTransform: 'none', borderRadius: '10px', ':hover': { backgroundColor: 'initial', }, }}
           >
             Delete or Leave Group

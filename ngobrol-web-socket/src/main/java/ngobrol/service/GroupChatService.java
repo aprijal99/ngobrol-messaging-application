@@ -12,4 +12,5 @@ public interface GroupChatService {
     GroupChat dtoToEntity(GroupChatDto groupChatDto);
     GroupChatDto entityToDto(GroupChat groupChat);
     List<GroupChatDto> listEntityToListDto(List<GroupChat> groupChats);
+    void deleteGroupChat(GroupChat groupChat);
 }

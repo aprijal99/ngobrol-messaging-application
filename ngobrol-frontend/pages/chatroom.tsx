@@ -34,7 +34,8 @@ stompClient = over(Sock);
 
 const Home = ({ userEmail }: HomeProps) => {
   const { activeChat: { chatMode } } = useSelector((state: RootState) => state.activeChat, (oldVal, newVal) => {
-    return !(oldVal.activeChat.chatMode === '' && newVal.activeChat.chatMode !== '');
+    if(oldVal.activeChat.chatMode === '' && newVal.activeChat.chatMode !== '') return false;
+    return !(oldVal.activeChat.chatMode !== '' && newVal.activeChat.chatMode === '');
   });
 
   const dispatch = useDispatch<AppDispatch>();

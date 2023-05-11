@@ -129,6 +129,16 @@ public class GroupChatRestController {
         return ResponseUtil.noData(HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/{group_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteGroup(@PathVariable(name = "group_id") Integer groupId) {
+        GroupChat groupChat = groupChatService.findGroupChatById(groupId);
+        userGroupService.deleteUserGroupsByGroupChat(groupChat);
+        groupMessageService.deleteGroupMessagesByGroupChat(groupChat);
+        groupChatService.deleteGroupChat(groupChat);
+
+        return ResponseUtil.noData(HttpStatus.OK);
+    }
+
     @DeleteMapping(path = "/delete-user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteUserFromGroup(@RequestBody UserGroupDto userGroupDto) {
         User user = userService.findUserByEmail(userGroupDto.getUserEmail());
@@ -140,6 +150,5 @@ public class GroupChatRestController {
         } else {
             return ResponseUtil.noData(HttpStatus.BAD_REQUEST);
         }
-
     }
 }

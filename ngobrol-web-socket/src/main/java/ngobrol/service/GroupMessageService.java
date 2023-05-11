@@ -13,6 +13,7 @@ public interface GroupMessageService {
     void saveGroupMessage(GroupMessage groupMessage);
     List<GroupMessage> findGroupMessagesByGroupChatTopRecord(List<GroupChat> groupChats);
     List<GroupMessage> findGroupMessagesByGroupChat(GroupChat groupChat);
+    void deleteGroupMessagesByGroupChat(GroupChat groupChat);
     GroupMessage dtoToEntity(GroupMessageDto groupMessageDto, User sender, GroupChat groupChat);
     GroupMessageDto entityToDto(GroupMessage groupMessage);
     List<GroupMessageDto> listEntityToListDto(List<GroupMessage> groupMessages);

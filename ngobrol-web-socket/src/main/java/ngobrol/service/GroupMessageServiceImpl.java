@@ -46,6 +46,11 @@ public class GroupMessageServiceImpl implements GroupMessageService {
     }
 
     @Override
+    public void deleteGroupMessagesByGroupChat(GroupChat groupChat) {
+        groupMessageRepository.deleteGroupMessagesByGroupChat(groupChat);
+    }
+
+    @Override
     public GroupMessage dtoToEntity(GroupMessageDto groupMessageDto, User sender, GroupChat groupChat) {
         return new GroupMessage(groupMessageDto.getMessage(), groupMessageDto.getFileUrl(), new Timestamp(groupMessageDto.getCreatedAt()), sender, groupChat);
     }
