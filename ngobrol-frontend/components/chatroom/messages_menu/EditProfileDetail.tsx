@@ -145,10 +145,16 @@ const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { c
   const store = useStore<RootState>();
   const dispatch = useDispatch<AppDispatch>();
 
-  const leaveGroup = () => {
+  const resetGroup = () => {
     const messageMenu = document.getElementById('message-menu');
     if(messageMenu) messageMenu.style.marginRight = '0px';
 
+    dispatch(changeActiveChat(resetActiveChat()));
+    dispatch(deleteGroup({ groupId: currentGroup.groupId }));
+    dispatch(deleteChat({ groupId: currentGroup.groupId }));
+  }
+
+  const leaveGroup = () => {
     fetch(`http://localhost:7080/group/delete-user`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json', },
@@ -162,9 +168,17 @@ const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { c
         if(result.code !== 200) return;
       });
 
-    dispatch(changeActiveChat(resetActiveChat()));
-    dispatch(deleteGroup({ groupId: currentGroup.groupId }));
-    dispatch(deleteChat({ groupId: currentGroup.groupId }));
+    resetGroup();
+  }
+
+  const deleteCurrentGroup = () => {
+    fetch(`http://localhost:7080/group/${currentGroup.groupId}`, { method: 'DELETE', })
+      .then(fetchResult => fetchResult.json())
+      .then((result: ApiType) => {
+        if(result.code !== 200) return;
+      });
+
+    resetGroup();
   }
 
   return (
@@ -174,7 +188,7 @@ const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { c
     >
       <DialogTitle sx={{ lineHeight: '1.5rem', }}>Delete or leave the group?</DialogTitle>
       <DialogActions>
-        <Button color='error' onClick={() => closeDialog()} sx={{ textTransform: 'none', ':hover': { backgroundColor: 'initial', }, }}>Delete Group</Button>
+        <Button color='error' onClick={() => { closeDialog(); deleteCurrentGroup(); }} sx={{ textTransform: 'none', ':hover': { backgroundColor: 'initial', }, }}>Delete Group</Button>
         <Button color='error' onClick={() => { closeDialog(); leaveGroup(); }} sx={{ textTransform: 'none', ':hover': { backgroundColor: 'initial', }, }}>Leave Group</Button>
       </DialogActions>
     </Dialog>
