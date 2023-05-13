@@ -5,7 +5,7 @@ import GroupList from './GroupList';
 import {GroupAddOutlined} from '@mui/icons-material';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
-import {IconButton} from '@mui/material';
+import {Box, IconButton} from '@mui/material';
 import React, {useState} from 'react';
 import DialogContainer from '../dialog/DialogContainer';
 import AddGroupDialog from '../dialog/AddGroupDialog';
@@ -44,7 +44,12 @@ const Group = () => {
       <MainMenuTitle title='Groups' addIcon={<NewGroupButton />} />
       <SearchBar placeholder='Search or create a new group' />
       <ScrollableContainer reducedHeight='130px'>
-        {sortedGroup.map(g => <GroupList key={g.groupId} groupList={g} />)}
+        {sortedGroup.length > 0 ?
+          sortedGroup.map(g => <GroupList key={g.groupId} groupList={g} />) :
+          <Box position='absolute' left='50%' top='50%' sx={{ transform: 'translate3d(-50%, -50%, 0)', color: 'rgba(255, 255, 255, 0.6)', }}>
+            There is no any group
+          </Box>
+        }
       </ScrollableContainer>
     </>
   );

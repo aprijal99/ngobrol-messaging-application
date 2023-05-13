@@ -1,13 +1,15 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
+type ChatProps = {
+  message: string,
+  fileUrl: string,
+  createdAt: number,
+  contactOrGroupName: string,
+  imageUrl: string,
+}
+
 export type ChatType = {
-  [n: string | number] : {
-    message: string,
-    fileUrl: string,
-    createdAt: number,
-    contactOrGroupName: string,
-    imageUrl: string,
-  },
+  [n: string | number] : ChatProps,
 }
 
 type ChatState = {
@@ -41,6 +43,14 @@ const chatSlice = createSlice({
         chatByEmail.createdAt = action.payload.message.createdAt;
 
         state.chat[action.payload.email] = chatByEmail;
+      } else {
+        state.chat[action.payload.email] = {
+          message: action.payload.message.message,
+          fileUrl: action.payload.message.fileUrl,
+          createdAt: action.payload.message.createdAt,
+          contactOrGroupName: '',
+          imageUrl: '',
+        }
       }
     },
     changeOneCurrentGroupChat: (state: ChatState, action) => {
@@ -51,6 +61,14 @@ const chatSlice = createSlice({
         chatByGroupId.createdAt = action.payload.groupMessage.createdAt;
 
         state.chat[action.payload.groupId] = chatByGroupId;
+      } else {
+        state.chat[action.payload.groupId] = {
+          message: action.payload.groupMessage.message,
+          fileUrl: action.payload.groupMessage.fileUrl,
+          createdAt: action.payload.groupMessage.createdAt,
+          contactOrGroupName: '',
+          imageUrl: '',
+        }
       }
     },
     updateImageUrl: (state, action: PayloadAction<{ groupId: number, imageUrl: string, }>) => {

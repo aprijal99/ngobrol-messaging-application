@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {addGroup, GroupType} from '../../../redux/slice/groupSlice';
+import {addGroup, changeGroupUsers, GroupType} from '../../../redux/slice/groupSlice';
 import findGroup from '../../../functions/findGroup';
 import {Alert, Avatar, Box, Button, IconButton, TextField, Typography} from '@mui/material';
 import {ArrowBackIosNew, Close} from '@mui/icons-material';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux/store/store';
 import {ApiType} from '../../../types/api';
+import {stompClient} from '../../../pages/chatroom';
 
 const GroupJoinDialog = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -48,7 +49,16 @@ const GroupJoinDialog = () => {
         .then(fetchResult => fetchResult.json())
         .then((result: ApiType) => {
           if(result.code !== 201) throw new Error('Something went wrong');
-          else dispatch(addGroup(joinGroup));
+          else {
+            joinGroup.users.push(store.getState().user.user);
+            joinGroup.userNumber += 1;
+            dispatch(addGroup(joinGroup));
+            stompClient.send('/app/group-message', {}, JSON.stringify({
+              message: '',
+              senderEmail: store.getState().user.user.email,
+              groupId: joinGroup.groupId,
+            }));
+          }
         })
         .catch(error => console.log(error));
     }

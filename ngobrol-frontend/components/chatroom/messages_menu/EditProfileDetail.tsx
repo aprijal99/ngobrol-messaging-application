@@ -141,18 +141,18 @@ const AddMembersDialog = ({ openDialog, groupMembers, closeDialog, addMembers }:
   );
 }
 
+const resetGroup = (groupId: number, dispatch: AppDispatch) => {
+  const messageMenu = document.getElementById('message-menu');
+  if(messageMenu) messageMenu.style.marginRight = '0px';
+
+  dispatch(changeActiveChat(resetActiveChat()));
+  dispatch(deleteGroup({ groupId: groupId }));
+  dispatch(deleteChat({ groupId: groupId }));
+}
+
 const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { currentGroup: GroupType, openDialog: boolean, closeDialog: () => void, }) => {
   const store = useStore<RootState>();
-  const dispatch = useDispatch<AppDispatch>();
-
-  const resetGroup = () => {
-    const messageMenu = document.getElementById('message-menu');
-    if(messageMenu) messageMenu.style.marginRight = '0px';
-
-    dispatch(changeActiveChat(resetActiveChat()));
-    dispatch(deleteGroup({ groupId: currentGroup.groupId }));
-    dispatch(deleteChat({ groupId: currentGroup.groupId }));
-  }
+  const dispatch: AppDispatch = useDispatch<AppDispatch>();
 
   const leaveGroup = () => {
     fetch(`http://localhost:7080/group/delete-user`, {
@@ -168,7 +168,7 @@ const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { c
         if(result.code !== 200) return;
       });
 
-    resetGroup();
+    resetGroup(currentGroup.groupId, dispatch);
   }
 
   const deleteCurrentGroup = () => {
@@ -178,7 +178,7 @@ const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { c
         if(result.code !== 200) return;
       });
 
-    resetGroup();
+    resetGroup(currentGroup.groupId, dispatch);
   }
 
   return (

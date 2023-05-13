@@ -1,10 +1,25 @@
 import {Box, Typography} from '@mui/material';
 import {GroupType} from '../../../redux/slice/groupSlice';
 import ProfileAvatar from '../ProfileAvatar';
+import {openMessageMenuAndChangeArrow} from './ChatList';
+import {useDispatch} from 'react-redux';
+import {AppDispatch} from '../../../redux/store/store';
+import {changeActiveChat} from '../../../redux/slice/activeChatSlice';
+import {changeToGroupChat} from '../../../functions/activeChat';
+import {setGroupId} from '../../../redux/slice/sentMessageSlice';
 
 const GroupList = ({ groupList }: { groupList: GroupType }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const handleClickGroupList = () => {
+    openMessageMenuAndChangeArrow();
+
+    dispatch(changeActiveChat(changeToGroupChat(groupList.groupId as number)));
+    dispatch(setGroupId(groupList.groupId as number));
+  }
+
   return (
     <Box
+      onClick={handleClickGroupList}
       sx={{
         p: 1, mx: -1, mb: .5, borderRadius: '10px',
         display: 'flex', cursor: 'pointer',

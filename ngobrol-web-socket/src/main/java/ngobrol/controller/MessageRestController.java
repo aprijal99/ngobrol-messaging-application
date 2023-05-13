@@ -51,6 +51,9 @@ public class MessageRestController {
         User receiver = userService.findUserByEmail(receiverEmail);
 
         List<Message> messages = messageService.findMessagesBySenderAndReceiver(sender, receiver);
+        if(messages.size() == 0) {
+            return ResponseUtil.noData(HttpStatus.NOT_FOUND);
+        }
         List<MessageDto> messageDtoList = messageService.listEntityToListDto(messages);
 
         return ResponseUtil.withData(HttpStatus.FOUND, messageDtoList);

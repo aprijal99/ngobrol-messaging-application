@@ -1,16 +1,17 @@
 import {Box, Typography} from '@mui/material';
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '../../../redux/store/store';
-import {changeActiveMenu} from '../../../redux/slice/menuSlice';
 import {changeActiveChat} from '../../../redux/slice/activeChatSlice';
 import {setReceiverEmail} from '../../../redux/slice/sentMessageSlice';
 import {changeToPrivateChat} from '../../../functions/activeChat';
 import ProfileAvatar from '../ProfileAvatar';
+import {openMessageMenuAndChangeArrow} from './ChatList';
 
 const ContactList = ({ name, status, email, imageUrl }: { name: string, status: string, email: string, imageUrl: string, }) => {
   const dispatch = useDispatch<AppDispatch>();
   const handleOnClick = () => {
-    dispatch(changeActiveMenu('chat'));
+    openMessageMenuAndChangeArrow();
+
     dispatch(changeActiveChat(changeToPrivateChat(email)));
     dispatch(setReceiverEmail(email));
   }

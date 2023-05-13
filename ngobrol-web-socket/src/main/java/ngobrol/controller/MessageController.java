@@ -34,14 +34,16 @@ public class MessageController {
 
     @MessageMapping("/group-message")
     public GroupMessageDto receiveMessage(@Payload GroupMessageDto groupMessageDto) {
-        User sender = userService.findUserByEmail(groupMessageDto.getSenderEmail());
         GroupChat groupChat = groupChatService.findGroupChatById(groupMessageDto.getGroupId());
 
-        GroupMessage groupMessage = groupMessageService.dtoToEntity(groupMessageDto, sender, groupChat);
-        groupMessageService.saveGroupMessage(groupMessage);
+        if (!groupMessageDto.getMessage().equals("")) {
+            User sender = userService.findUserByEmail(groupMessageDto.getSenderEmail());
+            groupMessageDto.setSenderName(sender.getName());
+            groupMessageDto.setImageUrl(sender.getImageUrl());
 
-        groupMessageDto.setSenderName(sender.getName());
-        groupMessageDto.setImageUrl(sender.getImageUrl());
+            GroupMessage groupMessage = groupMessageService.dtoToEntity(groupMessageDto, sender, groupChat);
+            groupMessageService.saveGroupMessage(groupMessage);
+        }
 
         List<UserGroup> userGroups = userGroupService.findUserGroupsByGroup(groupChat);
         for(UserGroup userGroup: userGroups) {
@@ -60,8 +62,10 @@ public class MessageController {
         User sender = userService.findUserByEmail(messageDto.getSenderEmail());
         User receiver = userService.findUserByEmail(messageDto.getReceiverEmail());
 
-        Message message = messageService.dtoToEntity(messageDto, sender, receiver);
-        messageService.saveMessage(message);
+        if (!messageDto.getMessage().equals("")) {
+            Message message = messageService.dtoToEntity(messageDto, sender, receiver);
+            messageService.saveMessage(message);
+        }
 
         simpMessagingTemplate.convertAndSend("/topic/" + messageDto.getReceiverEmail(), messageDto);
 

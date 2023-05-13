@@ -9,10 +9,10 @@ import redirectToPage from '../functions/redirectToPage';
 import fetchContact from '../functions/fetchContact';
 import fetchChat from '../functions/fetchChat';
 import MainMenu from '../components/chatroom/MainMenu';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector, useStore} from 'react-redux';
 import {AppDispatch, RootState} from '../redux/store/store';
 import {changeOneCurrentGroupChat, changeOneCurrentPrivateChat, setInitialChat} from '../redux/slice/chatSlice';
-import {setInitialContact} from '../redux/slice/contactSlice';
+import {addContact, setInitialContact} from '../redux/slice/contactSlice';
 import LeftMenu from '../components/chatroom/LeftMenu';
 import MessageMenu from '../components/chatroom/MessageMenu';
 import fetchUserData from '../functions/fetchUserData';
@@ -21,10 +21,11 @@ import cookie from 'cookie';
 import {setSenderEmail} from '../redux/slice/sentMessageSlice';
 import {addIncomingMessage, MessageType} from '../redux/slice/messageSlice';
 import fetchGroup from '../functions/fetchGroup';
-import {setInitialGroup} from '../redux/slice/groupSlice';
+import {addGroup, addUserToGroup, changeGroupUsers, GroupType, setInitialGroup} from '../redux/slice/groupSlice';
 import {addIncomingGroupMessage, GroupMessageType} from '../redux/slice/groupMessageSlice';
 import ProfileDetail from '../components/chatroom/messages_menu/ProfileDetail';
 import UserDetail from '../components/chatroom/left_menu/UserDetail';
+import findGroup from '../functions/findGroup';
 
 type HomeProps = { userEmail: string, }
 
@@ -39,6 +40,7 @@ const Home = ({ userEmail }: HomeProps) => {
   });
 
   const dispatch = useDispatch<AppDispatch>();
+  const store = useStore<RootState>();
 
   useEffect(() => {
     const initialFetching = async () => {
@@ -60,12 +62,36 @@ const Home = ({ userEmail }: HomeProps) => {
   const onSuccess = () => {
     stompClient.subscribe(`/topic/${userEmail}`, (payload: Message) => {
       const message: MessageType = JSON.parse(payload.body);
+
+      if(message.message === '') {
+        fetchUserData(message.senderEmail).then(userData => dispatch(addContact(userData)));
+        return;
+      }
+
       dispatch(addIncomingMessage({ email: message.senderEmail, message: message, }));
       dispatch(changeOneCurrentPrivateChat({ email: message.senderEmail, message: message, }));
     });
 
     stompClient.subscribe(`/topic/${userEmail}-group`, (payload: Message) => {
       const groupMessage: GroupMessageType = JSON.parse(payload.body);
+
+      if(groupMessage.message === '') {
+        if(!store.getState().group.group.some(g => g.groupId === Number(groupMessage.groupId))) {
+          findGroup(`${groupMessage.groupId}`)
+            .then(result => {
+              if(!(result instanceof Error)) {
+                dispatch(addGroup(result));
+              }
+            });
+          return;
+        }
+
+        fetchUserData(groupMessage.senderEmail).then(userData => {
+          dispatch(addUserToGroup({ groupId: groupMessage.groupId, user: userData }));
+        });
+        return;
+      }
+
       dispatch(addIncomingGroupMessage({ groupId: groupMessage.groupId, groupMessage: groupMessage, }));
       dispatch(changeOneCurrentGroupChat({ groupId: groupMessage.groupId, groupMessage: groupMessage, }))
     });

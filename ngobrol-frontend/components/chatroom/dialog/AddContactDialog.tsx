@@ -7,6 +7,7 @@ import {useDispatch, useSelector, useStore} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux/store/store';
 import {ApiType} from '../../../types/api';
 import {addContact} from '../../../redux/slice/contactSlice';
+import {stompClient} from '../../../pages/chatroom';
 
 const AddContactDialog = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -55,7 +56,14 @@ const AddContactDialog = () => {
         .then(fetchResult => fetchResult.json())
         .then((result: ApiType) => {
           if(result.code !== 201) throw new Error('Something went wrong');
-          else dispatch(addContact(newContact));
+          else {
+            dispatch(addContact(newContact));
+            stompClient.send('/app/private-message', {}, JSON.stringify({
+              message: '',
+              senderEmail: store.getState().user.user.email,
+              receiverEmail: newContact.email,
+            }));
+          }
         })
         .catch(error => console.log(error));
     }

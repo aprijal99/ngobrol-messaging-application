@@ -44,12 +44,19 @@ const groupSlice = createSlice({
         groupById.userNumber = action.payload.users.length;
       }
     },
+    addUserToGroup: (state, action: PayloadAction<{ groupId: number, user: UserType, }>) => {
+      const groupById = state.group.filter(g => g.groupId === action.payload.groupId)[0];
+      if(groupById) {
+        groupById.users.push(action.payload.user);
+        groupById.userNumber += 1;
+      }
+    },
     deleteGroup: (state, action: PayloadAction<{ groupId: number, }>) => {
       state.group = state.group.filter(g => g.groupId !== action.payload.groupId);
     },
   },
 });
 
-export const { setInitialGroup, addGroup, updateGroup, changeGroupUsers, deleteGroup } = groupSlice.actions;
+export const { setInitialGroup, addGroup, updateGroup, changeGroupUsers, addUserToGroup, deleteGroup } = groupSlice.actions;
 
 export default groupSlice.reducer;

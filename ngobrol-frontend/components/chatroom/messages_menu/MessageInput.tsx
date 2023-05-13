@@ -64,7 +64,7 @@ const MessageInput = () => {
         <Paper
           sx={{
             p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', height: '50px', borderRadius: '15px',
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            backgroundColor: 'rgba(255, 255, 255, 0.08)', backgroundImage: 'none',
           }}
         >
           <IconButton sx={{ p: '5px', ml: '5px' }} aria-label='menu'>

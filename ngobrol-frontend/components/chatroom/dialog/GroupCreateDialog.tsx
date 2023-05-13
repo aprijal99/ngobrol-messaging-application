@@ -18,6 +18,7 @@ import ImageCropper from './ImageCropper';
 import uploadImage from '../../../functions/uploadImage';
 import {ApiType} from '../../../types/api';
 import {addGroup, GroupType} from '../../../redux/slice/groupSlice';
+import {stompClient} from '../../../pages/chatroom';
 
 const CustomTableCell = ({ children, padding = 'none' }: { children: ReactNode, padding?: 'none' | 'normal' | 'checkbox' | undefined, }) => {
   return (
@@ -85,6 +86,11 @@ const GroupCreateDialog = ({ handleClickCloseDialog }: { handleClickCloseDialog:
                 if(result.code !== 201) throw new Error('Something went wrong');
                 else {
                   dispatch(addGroup(result.data));
+                  stompClient.send('/app/group-message', {}, JSON.stringify({
+                    message: '',
+                    senderEmail: user.email,
+                    groupId: result.data.groupId,
+                  }));
                   handleClickCloseDialog();
                 }
               })

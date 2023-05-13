@@ -1,5 +1,12 @@
 import {Avatar, Box, Divider, IconButton, Tab, Tabs, Typography} from '@mui/material';
-import {AlternateEmailOutlined, Close, EditOutlined, InfoOutlined, InsertLinkOutlined} from '@mui/icons-material';
+import {
+  AlternateEmailOutlined,
+  Close,
+  DeleteOutlined,
+  EditOutlined,
+  InfoOutlined,
+  InsertLinkOutlined
+} from '@mui/icons-material';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
 import React, {useState} from 'react';
@@ -142,14 +149,18 @@ const ProfileDetail = () => {
       }}
     >
       <Box display='flex' alignItems='center' sx={{ p: '10px', pb: 3, }}>
-
         <IconButton onClick={handleOnClick}>
           <Close fontSize='inherit' sx={{ color: 'rgba(255, 255, 255, 0.6)', }} />
         </IconButton>
         <Typography sx={{ flexGrow: '1', fontSize: '1.2rem', fontWeight: '600', ml: 2, color: 'rgba(255, 255, 255, 0.6)', }}>Contact Detail</Typography>
-        {chatMode === 'group' && <IconButton onClick={handleClickOpenEditProfileDetail}>
-          <EditOutlined fontSize='inherit' sx={{ color: 'rgba(255, 255, 255, 0.6)', }} />
-        </IconButton>}
+        {chatMode === 'private' ?
+          <IconButton>
+            <DeleteOutlined fontSize='inherit' sx={{ color: 'rgba(255, 255, 255, 0.6)', }} />
+          </IconButton> :
+          <IconButton onClick={handleClickOpenEditProfileDetail}>
+            <EditOutlined fontSize='inherit' sx={{ color: 'rgba(255, 255, 255, 0.6)', }} />
+          </IconButton>
+        }
       </Box>
       {chatMode === 'private' ? <ContactProfileDetail /> : <GroupProfileDetail />}
       {chatMode === 'group' && <EditProfileDetail />}

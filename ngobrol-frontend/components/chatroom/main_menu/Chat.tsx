@@ -5,7 +5,7 @@ import ChatList from './ChatList';
 import {LibraryAddOutlined, PeopleAltOutlined, PersonOutlineOutlined} from '@mui/icons-material';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux/store/store';
-import {CircularProgress, IconButton, ListItemIcon, Menu, MenuItem} from '@mui/material';
+import {Box, CircularProgress, IconButton, ListItemIcon, Menu, MenuItem} from '@mui/material';
 import React, {useState} from 'react';
 import {changeActiveMenu} from '../../../redux/slice/menuSlice';
 
@@ -20,11 +20,12 @@ const ChatListIteration = () => {
     <>
       {chat['lorem@ipsum.com'] !== undefined ? <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translateX(-50%) translateY(-50%)' }}>
         <CircularProgress />
-      </div> : keys.map(chatId => <ChatList
-        key={chatId}
-        chatId={chatId}
-        chat={chat[chatId]}
-      />)}
+      </div> : keys.length > 0 ?
+        keys.map(chatId => <ChatList key={chatId} chatId={chatId} chat={chat[chatId]} />) :
+        <Box position='absolute' left='50%' top='50%' sx={{ transform: 'translate3d(-50%, -50%, 0)', color: 'rgba(255, 255, 255, 0.6)', }}>
+          There is no any chat
+        </Box>
+      }
     </>
   );
 }

@@ -1,4 +1,4 @@
-import {Box, CircularProgress, Container} from '@mui/material';
+import {Box, CircularProgress, Container, Typography} from '@mui/material';
 import PrivateLeftMessage from './PrivateLeftMessage';
 import RightMessage from './RightMessage';
 import ScrollableContainer from '../ScrollableContainer';
@@ -17,7 +17,10 @@ const PrivateMessageList = ({ contactEmail }: { contactEmail: string, }) => {
   const dispatch = useDispatch<AppDispatch>();
   if(message[contactEmail] === undefined) {
     fetchMessage(userEmail, contactEmail)
-      .then(message => dispatch(setInitialMessage({ email: contactEmail, message: message, })));
+      .then(msg => {
+        if(msg instanceof Error) dispatch(setInitialMessage({ email: contactEmail, message: [], }));
+        else dispatch(setInitialMessage({ email: contactEmail, message: msg, }));
+      });
   }
 
   return (
@@ -26,19 +29,28 @@ const PrivateMessageList = ({ contactEmail }: { contactEmail: string, }) => {
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translateX(-50%) translateY(-50%)' }}>
           <CircularProgress />
         </div> : <Box sx={{ mb: -2, display: 'flex', flexDirection: 'column-reverse', }}>
-          {message[contactEmail].map((m, idx) => {
-            if(m.receiverEmail === contactEmail) {
-              const removeBbr: boolean = idx === 0 ? true : message[contactEmail][idx-1].receiverEmail !== m.receiverEmail;
-              const addMarginTop: boolean = idx === (message[contactEmail].length-1) ? false : message[contactEmail][idx+1].receiverEmail !== m.receiverEmail;
+          {message[contactEmail].length !== 0 ?
+            message[contactEmail].map((m, idx) => {
+              if(m.receiverEmail === contactEmail) {
+                const removeBbr: boolean = idx === 0 ? true : message[contactEmail][idx-1].receiverEmail !== m.receiverEmail;
+                const addMarginTop: boolean = idx === (message[contactEmail].length-1) ? false : message[contactEmail][idx+1].receiverEmail !== m.receiverEmail;
 
-              return <RightMessage key={idx} message={m.message} bbr={removeBbr} mt={addMarginTop}/>;
-            } else {
-              const removeBtl: boolean = idx === (message[contactEmail].length-1) ? true : message[contactEmail][idx+1].receiverEmail !== m.receiverEmail;
-              const addMarginTop: boolean = idx === (message[contactEmail].length-1) ? false : message[contactEmail][idx+1].receiverEmail !== m.receiverEmail;
+                return <RightMessage key={idx} message={m.message} bbr={removeBbr} mt={addMarginTop}/>;
+              } else {
+                const removeBtl: boolean = idx === (message[contactEmail].length-1) ? true : message[contactEmail][idx+1].receiverEmail !== m.receiverEmail;
+                const addMarginTop: boolean = idx === (message[contactEmail].length-1) ? false : message[contactEmail][idx+1].receiverEmail !== m.receiverEmail;
 
-              return <PrivateLeftMessage key={idx} message={m.message} btl={removeBtl} mt={addMarginTop}/>;
-            }
-          })}
+                return <PrivateLeftMessage key={idx} message={m.message} btl={removeBtl} mt={addMarginTop}/>;
+              }
+            }) :
+            <Box display='flex' justifyContent='center'>
+              <Typography
+                sx={{ textAlign: 'center', fontSize: '.9rem', px: 1.5, py: .5, borderRadius: '15px', backgroundColor: 'rgba(255, 255, 255, 0.08)', }}
+              >
+                There is no message yet
+              </Typography>
+            </Box>
+          }
         </Box>
       }
     </>
