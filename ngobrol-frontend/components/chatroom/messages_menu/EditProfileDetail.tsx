@@ -143,11 +143,14 @@ const AddMembersDialog = ({ openDialog, groupMembers, closeDialog, addMembers }:
 
 const resetGroup = (groupId: number, dispatch: AppDispatch) => {
   const messageMenu = document.getElementById('message-menu');
-  if(messageMenu) messageMenu.style.marginRight = '0px';
+  if(messageMenu) {
+    messageMenu.style.marginRight = '0px';
+    messageMenu.classList.remove('left-0');
+  }
 
   dispatch(changeActiveChat(resetActiveChat()));
   dispatch(deleteGroup({ groupId: groupId }));
-  dispatch(deleteChat({ groupId: groupId }));
+  dispatch(deleteChat({ chatId: groupId }));
 }
 
 const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { currentGroup: GroupType, openDialog: boolean, closeDialog: () => void, }) => {

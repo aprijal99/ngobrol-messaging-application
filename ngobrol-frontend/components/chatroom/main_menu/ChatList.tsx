@@ -5,9 +5,6 @@ import {changeActiveChat} from '../../../redux/slice/activeChatSlice';
 import {setGroupId, setReceiverEmail} from '../../../redux/slice/sentMessageSlice';
 import {changeToGroupChat, changeToPrivateChat} from '../../../functions/activeChat';
 import ProfileAvatar from '../ProfileAvatar';
-import fetchUserData from '../../../functions/fetchUserData';
-import {addContact} from '../../../redux/slice/contactSlice';
-import {UserType} from '../../../redux/slice/userSlice';
 
 export const openMessageMenuAndChangeArrow = () => {
   const messageMenu = document.getElementById('message-menu');

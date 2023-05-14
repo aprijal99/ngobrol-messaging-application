@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {addGroup, changeGroupUsers, GroupType} from '../../../redux/slice/groupSlice';
+import {addGroup, GroupType} from '../../../redux/slice/groupSlice';
 import findGroup from '../../../functions/findGroup';
 import {Alert, Avatar, Box, Button, IconButton, TextField, Typography} from '@mui/material';
 import {ArrowBackIosNew, Close} from '@mui/icons-material';
@@ -53,7 +53,7 @@ const GroupJoinDialog = () => {
             joinGroup.users.push(store.getState().user.user);
             joinGroup.userNumber += 1;
             dispatch(addGroup(joinGroup));
-            stompClient.send('/app/group-message', {}, JSON.stringify({
+            stompClient.send('/app/group-message', { messageType: 'new-member', }, JSON.stringify({
               message: '',
               senderEmail: store.getState().user.user.email,
               groupId: joinGroup.groupId,

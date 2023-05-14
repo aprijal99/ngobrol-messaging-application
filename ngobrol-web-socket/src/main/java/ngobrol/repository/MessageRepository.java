@@ -17,4 +17,6 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
             User senderAsSender, User receiverAsReceiver, User receiverAsSender, User senderAsReceiver);
     Optional<Message> findTopBySenderAndReceiverOrSenderAndReceiverOrderByCreatedAtDesc(
             User senderAsSender, User receiverAsReceiver, User receiverAsSender, User senderAsReceiver);
+    void deleteMessagesBySenderAndReceiverOrSenderAndReceiver(
+            User senderAsSender, User receiverAsReceiver, User receiverAsSender, User senderAsReceiver);
 }

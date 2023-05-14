@@ -1,4 +1,4 @@
-import {Box, IconButton, Typography} from '@mui/material';
+import {Box, Typography} from '@mui/material';
 import {ReactNode} from 'react';
 
 const MainMenuTitle = ({ title, addIcon }: { title: string, addIcon: ReactNode, }) => {

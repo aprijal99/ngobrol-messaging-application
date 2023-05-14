@@ -30,6 +30,11 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    public Integer deleteContact(User user, User contact) {
+        return contactRepository.deleteContactByUserAndContactOrUserAndContact(user, contact, contact, user);
+    }
+
+    @Override
     public Contact dtoToEntity(User user, User contactUser) {
         return new Contact(user, contactUser);
     }

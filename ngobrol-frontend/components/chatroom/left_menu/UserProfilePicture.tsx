@@ -1,4 +1,4 @@
-import {Avatar, Box, IconButton} from '@mui/material';
+import {Avatar, Box} from '@mui/material';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store/store';
 

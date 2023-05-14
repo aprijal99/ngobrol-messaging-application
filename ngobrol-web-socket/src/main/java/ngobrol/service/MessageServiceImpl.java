@@ -53,6 +53,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    public void deleteMessagesBySenderAndReceiver(User sender, User receiver) {
+        messageRepository.deleteMessagesBySenderAndReceiverOrSenderAndReceiver(sender, receiver, receiver, sender);
+    }
+
+    @Override
     public Message dtoToEntity(MessageDto messageDto, User sender, User receiver) {
         return new Message(messageDto.getMessage(), messageDto.getFileUrl(), new Timestamp(messageDto.getCreatedAt()), sender, receiver);
     }

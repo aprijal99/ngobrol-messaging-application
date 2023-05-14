@@ -58,13 +58,4 @@ public class MessageRestController {
 
         return ResponseUtil.withData(HttpStatus.FOUND, messageDtoList);
     }
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void newMessage(@RequestBody MessageDto messageDto) {
-        User sender = userService.findUserByEmail(messageDto.getSenderEmail());
-        User receiver = userService.findUserByEmail(messageDto.getReceiverEmail());
-
-        Message message = messageService.dtoToEntity(messageDto, sender, receiver);
-        messageService.saveMessage(message);
-    }
 }

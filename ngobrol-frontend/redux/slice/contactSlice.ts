@@ -19,9 +19,12 @@ const contactSlice = createSlice({
     addContact: (state, action: PayloadAction<UserType>) => {
       state.contact = [...state.contact, action.payload];
     },
+    deleteContact: (state, action: PayloadAction<{ contactEmail: string, }>) => {
+      state.contact = state.contact.filter(c => c.email !== action.payload.contactEmail);
+    },
   },
 });
 
-export const { setInitialContact, addContact } = contactSlice.actions;
+export const { setInitialContact, addContact, deleteContact } = contactSlice.actions;
 
 export default contactSlice.reducer;

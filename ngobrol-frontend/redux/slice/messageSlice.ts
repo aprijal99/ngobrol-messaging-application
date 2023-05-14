@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export type MessageType = {
   message: string,
@@ -40,9 +40,15 @@ const messageSlice = createSlice({
         state.message[action.payload.email] = messageByEmail;
       }
     },
+    deleteContactMessage: (state, action: PayloadAction<{ contactEmail: string, }>) => {
+      const tempMessage = state.message;
+      delete tempMessage[action.payload.contactEmail];
+
+      state.message = tempMessage;
+    },
   },
 });
 
-export const { setInitialMessage, addIncomingMessage } = messageSlice.actions;
+export const { setInitialMessage, addIncomingMessage, deleteContactMessage } = messageSlice.actions;
 
 export default messageSlice.reducer;

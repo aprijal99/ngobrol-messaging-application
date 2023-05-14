@@ -86,7 +86,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog }: { handleClickCloseDialog:
                 if(result.code !== 201) throw new Error('Something went wrong');
                 else {
                   dispatch(addGroup(result.data));
-                  stompClient.send('/app/group-message', {}, JSON.stringify({
+                  stompClient.send('/app/group-message', { messageType: 'new-group', }, JSON.stringify({
                     message: '',
                     senderEmail: user.email,
                     groupId: result.data.groupId,

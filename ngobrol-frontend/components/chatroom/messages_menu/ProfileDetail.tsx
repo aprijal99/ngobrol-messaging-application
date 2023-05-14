@@ -1,4 +1,15 @@
-import {Avatar, Box, Divider, IconButton, Tab, Tabs, Typography} from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button, Dialog,
+  DialogActions,
+  DialogTitle,
+  Divider,
+  IconButton, Slide,
+  Tab,
+  Tabs,
+  Typography
+} from '@mui/material';
 import {
   AlternateEmailOutlined,
   Close,
@@ -7,17 +18,32 @@ import {
   InfoOutlined,
   InsertLinkOutlined
 } from '@mui/icons-material';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/store/store';
+import {useDispatch, useSelector, useStore} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store/store';
 import React, {useState} from 'react';
 import EditProfileDetail from './EditProfileDetail';
 import {UserType} from '../../../redux/slice/userSlice';
+import {TransitionProps} from '@mui/material/transitions';
+import {ApiType} from '../../../types/api';
+import {resetActiveChat} from '../../../functions/activeChat';
+import {changeActiveChat} from '../../../redux/slice/activeChatSlice';
+import {deleteContact} from '../../../redux/slice/contactSlice';
+import {deleteChat} from '../../../redux/slice/chatSlice';
+import {stompClient} from '../../../pages/chatroom';
+import {deleteContactMessage} from '../../../redux/slice/messageSlice';
 
 const compareFn = (a: UserType, b: UserType) => {
   if(a.name < b.name) return -1;
   if(a.name > b.name) return 1;
   return 0;
 }
+
+const TransitionUp = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) { return <Slide direction='up' ref={ref} {...props} />; });
 
 const ContactProfileDetail = () => {
   const { contact } = useSelector((state: RootState) => state.contact);
@@ -120,8 +146,26 @@ const GroupProfileDetail = () => {
   );
 }
 
+const DeleteContactDialog = ({ openDialog, closeDialog, removeContact }: { openDialog: boolean, closeDialog: () => void, removeContact: () => void, }) => {
+  return (
+    <Dialog
+      open={openDialog} onClose={closeDialog} TransitionComponent={TransitionUp}
+      sx={{ '.MuiPaper-root': { m: 2.5, backgroundColor: '#252525', backgroundImage: 'none', }, }}
+    >
+      <DialogTitle sx={{ lineHeight: '1.5rem', }}>Delete the contact?</DialogTitle>
+      <DialogActions>
+        <Button onClick={() => { closeDialog(); }} sx={{ textTransform: 'none', ':hover': { backgroundColor: 'initial', }, }}>Cancel</Button>
+        <Button color='error' onClick={() => { closeDialog(); removeContact() }} sx={{ textTransform: 'none', ':hover': { backgroundColor: 'initial', }, }}>Delete</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 const ProfileDetail = () => {
-  const { activeChat: { chatMode } } = useSelector((state: RootState) => state.activeChat);
+  const store = useStore<RootState>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { activeChat: { chatMode, contactEmail } } = useSelector((state: RootState) => state.activeChat);
+  const [deleteContactDialog, setDeleteContactDialog] = useState<boolean>(false);
 
   const handleOnClick = () => {
     const profileDetail = document.getElementById('profile-detail');
@@ -136,6 +180,38 @@ const ProfileDetail = () => {
     if(editProfileDetail) editProfileDetail.classList.remove("translate-x-minus-100-percent");
   }
 
+  const removeContact = () => {
+    fetch(`http://localhost:7080/contact`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', },
+      body: JSON.stringify({
+        userEmail: store.getState().user.user.email,
+        contactEmail: contactEmail,
+      }),
+    })
+      .then(fetchResult => fetchResult.json())
+      .then((result: ApiType) => {
+        if(result.code === 200) {
+          const messageMenu = document.getElementById('message-menu');
+          if(messageMenu) {
+            messageMenu.style.marginRight = '0px';
+            messageMenu.classList.remove('left-0');
+          }
+
+          stompClient.send('/app/private-message', { messageType: 'delete-contact', }, JSON.stringify({
+            message: '',
+            senderEmail: store.getState().user.user.email,
+            receiverEmail: contactEmail,
+          }));
+
+          dispatch(changeActiveChat(resetActiveChat()));
+          dispatch(deleteContact({ contactEmail: contactEmail, }));
+          dispatch(deleteChat({ chatId: contactEmail, }));
+          dispatch(deleteContactMessage({ contactEmail: contactEmail, }))
+        }
+      });
+  }
+
   return (
     <Box
       id='profile-detail'
@@ -148,13 +224,15 @@ const ProfileDetail = () => {
         ':hover': { '::-webkit-scrollbar-thumb': { visibility: 'visible', }, },
       }}
     >
+      <DeleteContactDialog openDialog={deleteContactDialog} closeDialog={() => setDeleteContactDialog(false)} removeContact={() => removeContact()} />
+
       <Box display='flex' alignItems='center' sx={{ p: '10px', pb: 3, }}>
         <IconButton onClick={handleOnClick}>
           <Close fontSize='inherit' sx={{ color: 'rgba(255, 255, 255, 0.6)', }} />
         </IconButton>
         <Typography sx={{ flexGrow: '1', fontSize: '1.2rem', fontWeight: '600', ml: 2, color: 'rgba(255, 255, 255, 0.6)', }}>Contact Detail</Typography>
         {chatMode === 'private' ?
-          <IconButton>
+          <IconButton onClick={() => setDeleteContactDialog(true)}>
             <DeleteOutlined fontSize='inherit' sx={{ color: 'rgba(255, 255, 255, 0.6)', }} />
           </IconButton> :
           <IconButton onClick={handleClickOpenEditProfileDetail}>

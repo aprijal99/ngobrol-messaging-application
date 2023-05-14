@@ -75,9 +75,9 @@ const chatSlice = createSlice({
       let chatByGroupId = state.chat[action.payload.groupId];
       if(chatByGroupId) chatByGroupId.imageUrl = action.payload.imageUrl;
     },
-    deleteChat: (state, action: PayloadAction<{ groupId: number, }>) => {
+    deleteChat: (state, action: PayloadAction<{ chatId: string | number, }>) => {
       let tempChat = state.chat;
-      delete tempChat[action.payload.groupId];
+      delete tempChat[action.payload.chatId];
 
       state.chat = tempChat;
     }

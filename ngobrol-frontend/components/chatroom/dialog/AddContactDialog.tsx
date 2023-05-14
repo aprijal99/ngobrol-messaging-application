@@ -58,7 +58,7 @@ const AddContactDialog = () => {
           if(result.code !== 201) throw new Error('Something went wrong');
           else {
             dispatch(addContact(newContact));
-            stompClient.send('/app/private-message', {}, JSON.stringify({
+            stompClient.send('/app/private-message', { messageType: 'new-contact', }, JSON.stringify({
               message: '',
               senderEmail: store.getState().user.user.email,
               receiverEmail: newContact.email,

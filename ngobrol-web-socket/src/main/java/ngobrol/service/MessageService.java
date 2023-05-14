@@ -14,6 +14,7 @@ public interface MessageService {
     List<User> findSendersByReceiver(User receiver);
     List<Message> findMessagesBySenderAndReceiver(User sender, User receiver);
     List<Message> findMessagesBySenderAndReceiverTopRecord(User sender, List<User> receivers);
+    void deleteMessagesBySenderAndReceiver(User sender, User receiver);
     Message dtoToEntity(MessageDto messageDto, User sender, User receiver);
     MessageDto entityToDto(Message message);
     ChatDto entityToChat(Message message);

@@ -11,21 +11,28 @@ import fetchChat from '../functions/fetchChat';
 import MainMenu from '../components/chatroom/MainMenu';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 import {AppDispatch, RootState} from '../redux/store/store';
-import {changeOneCurrentGroupChat, changeOneCurrentPrivateChat, setInitialChat} from '../redux/slice/chatSlice';
-import {addContact, setInitialContact} from '../redux/slice/contactSlice';
+import {
+  changeOneCurrentGroupChat,
+  changeOneCurrentPrivateChat,
+  deleteChat,
+  setInitialChat
+} from '../redux/slice/chatSlice';
+import {addContact, deleteContact, setInitialContact} from '../redux/slice/contactSlice';
 import LeftMenu from '../components/chatroom/LeftMenu';
 import MessageMenu from '../components/chatroom/MessageMenu';
 import fetchUserData from '../functions/fetchUserData';
 import {setUser} from '../redux/slice/userSlice';
 import cookie from 'cookie';
 import {setSenderEmail} from '../redux/slice/sentMessageSlice';
-import {addIncomingMessage, MessageType} from '../redux/slice/messageSlice';
+import {addIncomingMessage, deleteContactMessage, MessageType} from '../redux/slice/messageSlice';
 import fetchGroup from '../functions/fetchGroup';
-import {addGroup, addUserToGroup, changeGroupUsers, GroupType, setInitialGroup} from '../redux/slice/groupSlice';
+import {addGroup, addUserToGroup, setInitialGroup} from '../redux/slice/groupSlice';
 import {addIncomingGroupMessage, GroupMessageType} from '../redux/slice/groupMessageSlice';
 import ProfileDetail from '../components/chatroom/messages_menu/ProfileDetail';
 import UserDetail from '../components/chatroom/left_menu/UserDetail';
 import findGroup from '../functions/findGroup';
+import {changeActiveChat} from '../redux/slice/activeChatSlice';
+import {resetActiveChat} from '../functions/activeChat';
 
 type HomeProps = { userEmail: string, }
 
@@ -64,7 +71,25 @@ const Home = ({ userEmail }: HomeProps) => {
       const message: MessageType = JSON.parse(payload.body);
 
       if(message.message === '') {
-        fetchUserData(message.senderEmail).then(userData => dispatch(addContact(userData)));
+        const payloadHeaders = payload.headers as { messageType: string, };
+
+        if(payloadHeaders.messageType === 'new-contact') {
+          fetchUserData(message.senderEmail).then(userData => dispatch(addContact(userData)));
+        } else if(payloadHeaders.messageType === 'delete-contact') {
+          if(store.getState().activeChat.activeChat.contactEmail === message.senderEmail) {
+            dispatch(changeActiveChat(resetActiveChat()));
+            const messageMenu = document.getElementById('message-menu');
+            if(messageMenu) {
+              messageMenu.style.marginRight = '0px';
+              messageMenu.classList.remove('left-0');
+            }
+          }
+
+          dispatch(deleteContact({ contactEmail: message.senderEmail, }));
+          dispatch(deleteChat({ chatId: message.senderEmail, }));
+          dispatch(deleteContactMessage({ contactEmail: message.senderEmail, }));
+        }
+
         return;
       }
 
@@ -76,19 +101,21 @@ const Home = ({ userEmail }: HomeProps) => {
       const groupMessage: GroupMessageType = JSON.parse(payload.body);
 
       if(groupMessage.message === '') {
-        if(!store.getState().group.group.some(g => g.groupId === Number(groupMessage.groupId))) {
+        const payloadHeaders = payload.headers as { messageType: string, };
+
+        if(payloadHeaders.messageType === 'new-group') {
           findGroup(`${groupMessage.groupId}`)
             .then(result => {
               if(!(result instanceof Error)) {
                 dispatch(addGroup(result));
               }
             });
-          return;
+        } else if(payloadHeaders.messageType === 'new-member') {
+          fetchUserData(groupMessage.senderEmail).then(userData => {
+            dispatch(addUserToGroup({ groupId: groupMessage.groupId, user: userData }));
+          });
         }
 
-        fetchUserData(groupMessage.senderEmail).then(userData => {
-          dispatch(addUserToGroup({ groupId: groupMessage.groupId, user: userData }));
-        });
         return;
       }
 
