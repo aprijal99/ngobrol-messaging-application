@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
 @RestController
 @RequestMapping(path = "/contact")
+@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class ContactRestController {
     private final UserService userService;
     private final ContactService contactService;

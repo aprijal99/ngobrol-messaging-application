@@ -17,9 +17,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin
 @RestController
 @RequestMapping(path = "/message")
+@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class MessageRestController {
     private final UserService userService;
     private final MessageService messageService;
