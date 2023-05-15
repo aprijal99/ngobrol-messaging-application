@@ -69,7 +69,7 @@ const EditUserDetail = () => {
       currentUserDetail['imageUrl'] = result;
     }
 
-    fetch(`http://localhost:7080/user/${user.email}`, {
+    fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/user/${user.email}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', },
       body: JSON.stringify(currentUserDetail),
@@ -104,7 +104,7 @@ const EditUserDetail = () => {
       }
 
       currentUserDetail['password'] = newUserPasswordInput?.value;
-      fetch('http://localhost:7080/user/check-password', {
+      fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/user/check-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({ email: user.email, password: currentUserPasswordInput?.value }),
@@ -152,7 +152,7 @@ const EditUserDetail = () => {
       <Box display='flex' justifyContent='center'>
         <Box position='relative' sx={{ cursor: 'pointer', }} onClick={() => document.getElementById('new-user-image-input')?.click()}>
           <Avatar
-            alt='User image' src={newUserImg ? URL.createObjectURL(newUserImg) : user.imageUrl ? `http://localhost:7080/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
+            alt='User image' src={newUserImg ? URL.createObjectURL(newUserImg) : user.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
             sx={{ height: '150px', width: '150px', opacity: '0.75' }}
           />
           <AddAPhotoOutlined sx={{ fontSize: '4rem', position: 'absolute', top: '50%', left: '50%', transform: 'translate3D(-50%, -50%, 0)', }} />

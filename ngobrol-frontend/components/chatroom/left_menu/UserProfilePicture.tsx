@@ -13,7 +13,7 @@ const UserProfilePicture = () => {
   return (
     <Box onClick={handleClickOpenUserDetail} sx={{ height: '75px', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
       <Avatar
-        alt='User Profile Image' src={user.imageUrl ? `http://localhost:7080/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
+        alt='User Profile Image' src={user.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
         sx={{ cursor: 'pointer', }}
       />
     </Box>

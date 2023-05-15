@@ -2,8 +2,8 @@ import {ApiType} from '../types/api';
 import {ChatType} from '../redux/slice/chatSlice';
 
 const fetchChat = async (email: string): Promise<ChatType> => {
-  const messageChatUrl = `http://localhost:7080/message/chat?email=${email}`;
-  const groupChatUrl = `http://localhost:7080/group/chat?email=${email}`;
+  const messageChatUrl = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/message/chat?email=${email}`;
+  const groupChatUrl = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group/chat?email=${email}`;
   try {
     const messageFetchResult = await fetch(messageChatUrl);
     const messageResult: ApiType<ChatType> = await messageFetchResult.json();

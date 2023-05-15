@@ -46,7 +46,7 @@ const AddContactDialog = () => {
         contactEmail: newContact.email,
       }
 
-      fetch('http://localhost:7080/contact', {
+      fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ const AddContactDialog = () => {
         <Typography align='center' sx={{ mb: .5, fontSize: '.9rem', color: 'rgba(255, 255, 255, 0.6)', }}>Found the following contact</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', p: 2, borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.23)', }}>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
-            <Avatar alt='Contact Profile Image' src='https://i.pravatar.cc/150?u=a042581f4e29026024d' />
+            <Avatar alt='Contact Profile Image' src={newContact.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${newContact.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
           </Box>
           <Box sx={{ mr: 2, flexGrow: '1', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', }}>
             <Typography sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', }}>{newContact.name}</Typography>

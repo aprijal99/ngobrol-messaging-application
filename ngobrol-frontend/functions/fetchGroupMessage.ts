@@ -2,7 +2,7 @@ import {ApiType} from '../types/api';
 import {GroupMessageType} from '../redux/slice/groupMessageSlice';
 
 const fetchMessage = async (groupId: number): Promise<GroupMessageType[]> => {
-  const url = `http://localhost:7080/group/message?group_id=${groupId}`;
+  const url = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group/message?group_id=${groupId}`;
   try {
     const fetchResult = await fetch(url);
     const result: ApiType<GroupMessageType[]> = await fetchResult.json();

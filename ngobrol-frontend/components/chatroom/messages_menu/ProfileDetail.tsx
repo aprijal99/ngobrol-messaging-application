@@ -53,7 +53,7 @@ const ContactProfileDetail = () => {
   return (
     <>
       <Avatar
-        alt='Contact Profile Image' src={contactByEmail.imageUrl ? `http://localhost:7080/image/${contactByEmail.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
+        alt='Contact Profile Image' src={contactByEmail.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${contactByEmail.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
         sx={{ m: '0 auto', height: '150px', width: '150px', cursor: 'pointer', }}
       />
       <Typography align='center' sx={{ mt: 3, fontSize: '1.2rem', fontWeight: 'bold', }}>
@@ -96,7 +96,7 @@ const GroupProfileDetail = () => {
   return (
     <>
       <Avatar
-        alt='Contact Profile Image' src={groupById.imageUrl ? `http://localhost:7080/image/${groupById.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
+        alt='Contact Profile Image' src={groupById.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${groupById.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
         sx={{ m: '0 auto', height: '150px', width: '150px', cursor: 'pointer', }}
       />
       <Typography align='center' sx={{ mt: 3, fontSize: '1.2rem', fontWeight: 'bold', }}>
@@ -181,7 +181,7 @@ const ProfileDetail = () => {
   }
 
   const removeContact = () => {
-    fetch(`http://localhost:7080/contact`, {
+    fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/contact`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json', },
       body: JSON.stringify({

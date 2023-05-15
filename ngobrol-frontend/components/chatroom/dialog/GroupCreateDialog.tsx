@@ -76,7 +76,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog }: { handleClickCloseDialog:
               createdAt: new Date().getTime(),
             }
 
-            fetch('http://localhost:7080/group', {
+            fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', },
               body: JSON.stringify(formBody),
@@ -187,7 +187,7 @@ const GroupCreateDialog = ({ handleClickCloseDialog }: { handleClickCloseDialog:
                     <CustomTableCell>
                       <Box sx={{ display: 'flex', p: .5, }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
-                          <Avatar alt='Contact Profile Image' src={c.imageUrl ? `http://localhost:7080/image/${c.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
+                          <Avatar alt='Contact Profile Image' src={c.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${c.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
                         </Box>
                         <Box>
                           <Typography>{c.name}</Typography>

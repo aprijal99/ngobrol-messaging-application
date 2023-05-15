@@ -50,7 +50,7 @@ const ConfirmationDialog = ({ openDialog, member, closeDialog, deleteMember }: {
       <DialogContent sx={{ pb: '16px', }}>
         <Box alignItems='center' sx={{ display: 'flex', }}>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
-            <Avatar alt='Contact Profile Image' src={member.imageUrl ? `http://localhost:7080/image/${member.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
+            <Avatar alt='Contact Profile Image' src={member.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${member.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
           </Box>
           <Box flexGrow='1'>
             <Typography>{member.name}</Typography>
@@ -120,7 +120,7 @@ const AddMembersDialog = ({ openDialog, groupMembers, closeDialog, addMembers }:
                 <TableCell sx={{ borderBottom: 'none', p: 0, }}>
                   <Box sx={{ display: 'flex', p: .5, }}>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
-                      <Avatar alt='Contact Profile Image' src={c.imageUrl ? `http://localhost:7080/image/${c.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
+                      <Avatar alt='Contact Profile Image' src={c.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${c.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
                     </Box>
                     <Box>
                       <Typography>{c.name}</Typography>
@@ -158,7 +158,7 @@ const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { c
   const dispatch: AppDispatch = useDispatch<AppDispatch>();
 
   const leaveGroup = () => {
-    fetch(`http://localhost:7080/group/delete-user`, {
+    fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group/delete-user`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json', },
       body: JSON.stringify({
@@ -175,7 +175,7 @@ const DeleteOrLeaveGroupDialog = ({ currentGroup, openDialog, closeDialog }: { c
   }
 
   const deleteCurrentGroup = () => {
-    fetch(`http://localhost:7080/group/${currentGroup.groupId}`, { method: 'DELETE', })
+    fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group/${currentGroup.groupId}`, { method: 'DELETE', })
       .then(fetchResult => fetchResult.json())
       .then((result: ApiType) => {
         if(result.code !== 200) return;
@@ -254,7 +254,7 @@ const EditProfileDetail = () => {
       newGroupDetail['imageUrl'] = result;
     }
 
-    fetch(`http://localhost:7080/group/${groupById.groupId}`, {
+    fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group/${groupById.groupId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', },
       body: JSON.stringify(newGroupDetail),
@@ -279,7 +279,7 @@ const EditProfileDetail = () => {
   }
 
   const addMembers = (selectedUsers: { userEmail: string }[]) => {
-    fetch(`http://localhost:7080/group/assign-user/batch/${groupById.groupId}`, {
+    fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group/assign-user/batch/${groupById.groupId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', },
       body: JSON.stringify(selectedUsers),
@@ -301,7 +301,7 @@ const EditProfileDetail = () => {
   }
 
   const deleteMember = (userEmail: string) => {
-    fetch(`http://localhost:7080/group/delete-user`, {
+    fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group/delete-user`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json', },
       body: JSON.stringify({
@@ -355,7 +355,7 @@ const EditProfileDetail = () => {
         <Box display='flex' justifyContent='center'>
           <Box position='relative' sx={{ cursor: 'pointer', }} onClick={() => document.getElementById('new-group-image-input')?.click()}>
             <Avatar
-              alt='Group image' src={newGroupImg ? URL.createObjectURL(newGroupImg) : groupById.imageUrl ? `http://localhost:7080/image/${groupById.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
+              alt='Group image' src={newGroupImg ? URL.createObjectURL(newGroupImg) : groupById.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${groupById.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
               sx={{ height: '150px', width: '150px', opacity: '0.75' }}
             />
             <AddAPhotoOutlined sx={{ fontSize: '4rem', position: 'absolute', top: '50%', left: '50%', transform: 'translate3D(-50%, -50%, 0)', }} />
@@ -381,7 +381,7 @@ const EditProfileDetail = () => {
             <legend style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.7)', padding: '0 5px', marginLeft: '8px' }}>Members</legend>
             {groupMembers.map((user, idx) => <Box key={idx} alignItems='center' sx={{ display: 'flex', mx: 1.25, my: 1, }}>
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
-                <Avatar alt='Contact Profile Image' src={user.imageUrl ? `http://localhost:7080/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
+                <Avatar alt='Contact Profile Image' src={user.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
               </Box>
               <Box flexGrow='1'>
                 <Typography>{user.name}</Typography>

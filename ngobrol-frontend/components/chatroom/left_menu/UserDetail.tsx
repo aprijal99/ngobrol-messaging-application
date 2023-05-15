@@ -38,7 +38,7 @@ const UserDetail = () => {
         </IconButton>
       </Box>
       <Avatar
-        alt='User image' src={user.imageUrl ? `http://localhost:7080/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
+        alt='User image' src={user.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${user.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
         sx={{ m: '0 auto', height: '150px', width: '150px', cursor: 'pointer', }}
       />
       <Typography align='center' sx={{ my: 3, fontSize: '1.2rem', fontWeight: 'bold', }}>

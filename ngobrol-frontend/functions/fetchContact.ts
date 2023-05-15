@@ -2,7 +2,7 @@ import {ApiType} from '../types/api';
 import {UserType} from '../redux/slice/userSlice';
 
 const fetchContact = async (email: string): Promise<UserType[]> => {
-  const url = `http://localhost:7080/contact?email=${email}`;
+  const url = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/contact?email=${email}`;
   try {
     const fetchResult = await fetch(url);
     const result: ApiType<UserType[]> = await fetchResult.json();

@@ -2,7 +2,7 @@ import {GroupType} from '../redux/slice/groupSlice';
 import {ApiType} from '../types/api';
 
 const findGroup = async (groupId: string): Promise<GroupType | Error> => {
-  const url = `http://localhost:7080/group/find?group_id=${groupId}`;
+  const url = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group/find?group_id=${groupId}`;
   try {
     const fetchResult = await fetch(url, { credentials: 'include', });
     const result: ApiType<GroupType> = await fetchResult.json();

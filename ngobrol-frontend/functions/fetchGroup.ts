@@ -2,7 +2,7 @@ import {ApiType} from '../types/api';
 import {GroupType} from '../redux/slice/groupSlice';
 
 const fetchContact = async (email: string): Promise<GroupType[]> => {
-  const url = `http://localhost:7080/group?email=${email}`;
+  const url = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group?email=${email}`;
   try {
     const fetchResult = await fetch(url);
     const result: ApiType<GroupType[]> = await fetchResult.json();

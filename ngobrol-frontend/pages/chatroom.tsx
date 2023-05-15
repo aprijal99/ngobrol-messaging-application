@@ -37,7 +37,7 @@ import {resetActiveChat} from '../functions/activeChat';
 type HomeProps = { userEmail: string, }
 
 export let stompClient: Client;
-const Sock: WebSocket = new SockJS('http://localhost:7080/websocket');
+const Sock: WebSocket = new SockJS(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/websocket`);
 stompClient = over(Sock);
 
 const Home = ({ userEmail }: HomeProps) => {

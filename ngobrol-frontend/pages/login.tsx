@@ -65,7 +65,7 @@ const Login = ({ authentication }: { authentication: boolean, }) => {
 
 const cookieOptions: CookieSerializeOptions = {
   httpOnly: true,
-  // secure: true, // secure only work over https
+  secure: true, // secure only work over https
   maxAge: 60 * 60,
   sameSite: 'lax',
   path: '/',
@@ -79,11 +79,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const form: { username: string, password: string, } = await parseBody(context.req, '1mb');
     const formBody: { [n: string]: string } = { username: form.username, password: form.password, }
     const encodedFormBody = Object.keys(formBody).map((key: string) => encodeURIComponent(key) + '=' + encodeURIComponent(formBody[key])).join('&');
-    const fetchResult = await fetch(`http://localhost:7080/login`, {
+    const fetchResult = await fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/login`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', },
       body: encodedFormBody,
     });
 

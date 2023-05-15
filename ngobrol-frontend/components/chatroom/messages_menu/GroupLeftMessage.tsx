@@ -5,7 +5,7 @@ const GroupLeftMessage = ({ groupMessage, avatar = true }: { groupMessage: Group
   return (
     <Box sx={{ pr: '100px', mb: .5, mt: avatar ? .5 : null, display: 'flex', }}>
       {avatar && <Avatar
-        alt='Contact Profile Image' src={groupMessage.imageUrl ? `http://localhost:7080/image/${groupMessage.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
+        alt='Contact Profile Image' src={groupMessage.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${groupMessage.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
       />}
       <Box
         sx={{

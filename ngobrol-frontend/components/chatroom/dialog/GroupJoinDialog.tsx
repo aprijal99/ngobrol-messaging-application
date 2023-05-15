@@ -39,11 +39,9 @@ const GroupJoinDialog = () => {
         groupChatId: joinGroup.groupId as number,
       }
 
-      fetch('http://localhost:7080/group/assign-user', {
+      fetch(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/group/assign-user`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify(formBody),
       })
         .then(fetchResult => fetchResult.json())
@@ -104,7 +102,7 @@ const GroupJoinDialog = () => {
           <Typography align='center' sx={{ mb: .5, fontSize: '.9rem', color: 'rgba(255, 255, 255, 0.6)', }}>Found the following group</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', p: 2, borderRadius: '4px', border: '1px solid rgba(255, 255, 255, 0.23)', }}>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mr: 2, }}>
-              <Avatar alt='Contact Profile Image' src={joinGroup.imageUrl ? `http://localhost:7080/image/${joinGroup.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
+              <Avatar alt='Contact Profile Image' src={joinGroup.imageUrl ? `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image/${joinGroup.imageUrl}` : 'https://i.pravatar.cc/150?u=a042581f4e29026024d'} />
             </Box>
             <Box sx={{ mr: 2, flexGrow: '1', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', }}>
               <Typography sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', }}>{joinGroup.name}</Typography>

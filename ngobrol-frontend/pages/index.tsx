@@ -1,11 +1,12 @@
 import {useState} from 'react';
-import {AppBar, Box, Button, Container, Drawer, IconButton, Toolbar, Typography} from '@mui/material';
+import {AppBar, Box, Button, Container, Drawer, IconButton, Link, Toolbar, Typography} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppDrawer from '../components/home/AppDrawer';
 import {GetServerSideProps} from 'next';
 import jwtDecode from 'jwt-decode';
 import {AccessTokenType} from '../types/token';
 import LoginOrChatroom from '../components/home/LoginOrChatroom';
+import {GitHub, LinkedIn} from '@mui/icons-material';
 
 const menus: string[] = ['about', 'blog', 'support'];
 const drawerWidth: number = 300;
@@ -92,7 +93,7 @@ const Index = (props: Props) => {
       {/* Banner */}
       <Container
         maxWidth='md'
-        sx={{ marginTop: '3rem', padding: '0 24px', '@media (min-width: 600px)': { marginTop: '5rem', }, }}
+        sx={{ marginTop: '3rem', padding: '0 24px 24px', '@media (min-width: 600px)': { marginTop: '5rem', }, }}
       >
         <Typography
           variant='h2' align='center' gutterBottom={true}
@@ -128,6 +129,22 @@ const Index = (props: Props) => {
           >
             Learn More
           </Button>
+        </Box>
+        <Box sx={{ mt: 10, mb: '5%', }}>
+          <img src='/app-desktop.png' alt='App desktop' style={{ maxWidth: '100%', borderRadius: '15px', }} />
+        </Box>
+        <Box display='flex' justifyContent='center' sx={{ mb: 10, mx: 'auto', maxWidth: '550px', }}>
+          <Box>
+            <img src='/app-mobile-1.png' alt='App mobile 1' style={{ maxWidth: '100%', borderRadius: '15px', }} />
+          </Box>
+          <Box sx={{ ml: -5, mt: 5, }}>
+            <img src='/app-mobile-2.png' alt='App mobile 2' style={{ maxWidth: '100%', borderRadius: '15px', }} />
+          </Box>
+        </Box>
+        <Typography align='center' gutterBottom={true}>Created by <Link underline='none' target='_blank' href='https://www.aprijal-ghiyas.tech'>Aprijal Ghiyas Setiawan</Link></Typography>
+        <Box display='flex' justifyContent='center' columnGap='10px'>
+          <Link target='_blank' href='https://github.com/aprijal99'><GitHub sx={{ color: 'white', }} /></Link>
+          <Link target='_blank' href='https://www.linkedin.com/in/aprijalghiyas/'><LinkedIn sx={{ color: 'white', }} /></Link>
         </Box>
       </Container>
       {/* End of Banner */}

@@ -1,7 +1,7 @@
 import {ApiType} from '../types/api';
 
 const uploadImage = async (image: File): Promise<string | Error> => {
-  const url = 'http://localhost:7080/image';
+  const url = `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/image`;
   let formData = new FormData();
   formData.append("image", image);
 
