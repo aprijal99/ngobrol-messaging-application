@@ -19,6 +19,9 @@ COPY --from=extract extract/spring-boot-loader/ ./
 COPY --from=extract extract/snapshot-dependencies/ ./
 COPY --from=extract extract/application/ ./
 
+RUN mkdir "/images"
+COPY ./images/ /images/
+
 EXPOSE 8080
 
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]

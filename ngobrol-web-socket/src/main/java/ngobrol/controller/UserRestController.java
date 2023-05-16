@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/user")
-@CrossOrigin(origins = {"https://ngobrol-virtual.vercel.app"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class UserRestController {
     final private UserService userService;
 
