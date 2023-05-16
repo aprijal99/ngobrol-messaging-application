@@ -4,6 +4,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_WEBSOCKET_URL: 'https://ngobrol-websocket.onrender.com',
   },
+  output: 'standalone',
 }
 
 module.exports = nextConfig
