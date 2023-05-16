@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/contact")
-@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"https://ngobrol.onrender.com"}, allowCredentials = "true")
 public class ContactRestController {
     private final UserService userService;
     private final ContactService contactService;

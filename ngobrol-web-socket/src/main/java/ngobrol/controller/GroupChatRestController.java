@@ -18,13 +18,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/group")
-@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"https://ngobrol.onrender.com"}, allowCredentials = "true")
 public class GroupChatRestController {
     private final UserService userService;
     private final GroupChatService groupChatService;

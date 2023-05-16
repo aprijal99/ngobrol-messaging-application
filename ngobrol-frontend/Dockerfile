@@ -1,4 +1,5 @@
 FROM node:16.14.2-alpine as base
+RUN apk add --no-cache libc6-compat
 WORKDIR base
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -12,8 +13,8 @@ RUN npm run build
 FROM node:16.14.2-alpine
 WORKDIR app
 COPY --from=build build/public ./public
-COPY --from=build app/.next/standalone ./
-COPY --from=build app/.next/static ./.next/static
+COPY --from=build build/.next/standalone ./
+COPY --from=build build/.next/static ./.next/static
 
 EXPOSE 3000
 
