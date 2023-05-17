@@ -95,7 +95,14 @@ const MessageList = () => {
   const { activeChat: { chatMode, contactEmail, groupId } } = useSelector((state: RootState) => state.activeChat);
 
   return (
-    <ScrollableContainer reducedHeight='166px' display='flex'>
+    <Box
+      sx={{
+        px: 2, pb: 2, maxHeight: 'calc(100% - 166px)', overflowX: 'hidden', overflowY: 'auto', position: 'relative', display: 'flex', flexDirection: 'column-reverse', flexGrow: '1',
+        '::-webkit-scrollbar': { width: '5px', },
+        '::-webkit-scrollbar-thumb': { borderRadius: '5px', visibility: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.3)', },
+        ':hover': { '::-webkit-scrollbar-thumb': { visibility: 'visible', }, },
+      }}
+    >
       <Container
         sx={{
           p: 0, minHeight: '100%', maxWidth: '750px !important', '@media (min-width: 600px)': { p: 0, },
@@ -104,7 +111,7 @@ const MessageList = () => {
       >
         {chatMode === 'private' ? <PrivateMessageList contactEmail={contactEmail} /> : <GroupMessageList groupId={groupId} />}
       </Container>
-    </ScrollableContainer>
+    </Box>
   );
 }
 

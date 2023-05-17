@@ -20,7 +20,7 @@ const MessageMenu = () => {
           transition: 'margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms, left 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
         }}
       >
-        {activeChat.chatMode === '' ? <ChatroomGreeting /> : <Box sx={{ display: 'grid', gridTemplateRows: '91px 1fr 75px', }}>
+        {activeChat.chatMode === '' ? <ChatroomGreeting /> : <Box display='flex' flexDirection='column' sx={{ height: '100%', maxHeight: '100%', }}>
           <MessageTopProfile />
           <MessageList />
           <MessageInput />

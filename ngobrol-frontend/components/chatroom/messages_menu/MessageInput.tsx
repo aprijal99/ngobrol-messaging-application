@@ -14,7 +14,7 @@ const MessageInput = () => {
   const store = useStore<RootState>();
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if(e.code === 'Enter') {
+    if((e.code === 'Enter') || (e.key === 'Enter') || (e.which === 13)) {
       const chatMode = store.getState().activeChat.activeChat.chatMode;
 
       if(chatMode === 'private') {
