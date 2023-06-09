@@ -23,7 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/group")
-@CrossOrigin(origins = {"https://ngobrol.onrender.com"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:4000"}, allowCredentials = "true")
 public class GroupChatRestController {
     private final UserService userService;
     private final GroupChatService groupChatService;

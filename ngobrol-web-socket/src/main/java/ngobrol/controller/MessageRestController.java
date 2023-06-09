@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/message")
-@CrossOrigin(origins = {"https://ngobrol.onrender.com"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:4000"}, allowCredentials = "true")
 public class MessageRestController {
     private final UserService userService;
     private final MessageService messageService;
