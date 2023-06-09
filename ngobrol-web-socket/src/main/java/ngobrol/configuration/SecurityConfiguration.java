@@ -54,7 +54,7 @@ public class SecurityConfiguration {
                 .antMatchers("/login").permitAll()
                 .antMatchers("/websocket", "/websocket/**").permitAll()
 //                .antMatchers("/websocket").authenticated()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
