@@ -4,7 +4,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_WEBSOCKET_URL: 'http://localhost:7080',
   },
-  // output: 'standalone',
+  output: 'standalone',
 }
 
 module.exports = nextConfig
