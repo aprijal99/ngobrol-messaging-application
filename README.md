@@ -10,7 +10,7 @@ Clone the project by `git clone https://github.com/aprijal99/ngobrol-messaging-a
 
 <img src="images/ngobrol-desktop.png" alt="Ngobrol Desktop" width="100%" />
 <div align='center'>
-    <img src="images/ngobrol-mobile-1.png" alt="Ngobrol Mobile 1" width="300" style="margin-right: 20px;" />
+    <img src="images/ngobrol-mobile-1.png" alt="Ngobrol Mobile 1" width="300" /> &nbsp; &nbsp;
     <img src="images/ngobrol-mobile-2.png" alt="Ngobrol Mobile 2" width="300" />
 </div>
 
