@@ -65,7 +65,7 @@ const Login = ({ authentication }: { authentication: boolean, }) => {
 
 const cookieOptions: CookieSerializeOptions = {
   httpOnly: true,
-  secure: true, // secure only work over https
+  secure: false, // secure only work over https
   maxAge: 60 * 60,
   sameSite: 'lax',
   path: '/',

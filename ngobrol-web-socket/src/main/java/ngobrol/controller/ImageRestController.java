@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/image")
-@CrossOrigin(origins = {"http://localhost:4000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class ImageRestController {
     private final ImageService imageService;
 

@@ -53,7 +53,6 @@ public class SecurityConfiguration {
                 .antMatchers("/image", "/image/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/websocket", "/websocket/**").permitAll()
-//                .antMatchers("/websocket").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .addFilter(jwtAuthenticationFilter)
